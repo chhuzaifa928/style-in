@@ -1,5 +1,14 @@
 // Shared domain types used across API routes, server components, and client UI.
 
+export interface HeroSlide {
+  media_url: string;
+  eyebrow: string;
+  title: string;
+  subtitle: string;
+  cta_label: string;
+  category_id: number | null;
+}
+
 export interface SiteSettings {
   id: number;
   marquee_text: string;
@@ -19,6 +28,7 @@ export interface SiteSettings {
   hero_right_media_url: string;
   hero_right_eyebrow: string;
   hero_right_title: string;
+  hero_slides: HeroSlide[];
   updated_at?: string;
 }
 

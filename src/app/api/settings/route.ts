@@ -2,7 +2,8 @@ import { requireAdmin } from '@/lib/auth';
 import { execute } from '@/lib/db';
 import { getSettings } from '@/lib/data';
 import { ok, fail, guarded, verifyOrigin } from '@/lib/api';
-import { cleanText, cleanPhone, cleanUrl, toMoney } from '@/lib/sanitize';
+import { cleanText, cleanPhone, cleanUrl, toMoney, toInt } from '@/lib/sanitize';
+import type { HeroSlide } from '@/lib/types';
 
 export const runtime = 'nodejs';
 
@@ -69,6 +70,30 @@ export async function PUT(req: Request) {
       160,
     );
 
+    // Hero slider: validate & clean each slide; cap at 8.
+    let heroSlides: HeroSlide[];
+    if (Array.isArray(body.hero_slides)) {
+      heroSlides = (body.hero_slides as unknown[])
+        .slice(0, 8)
+        .map((raw) => {
+          const s = (raw ?? {}) as Record<string, unknown>;
+          return {
+            media_url: cleanUrl(s.media_url, 500),
+            eyebrow: cleanText(s.eyebrow, 120),
+            title: cleanText(s.title, 160),
+            subtitle: cleanText(s.subtitle, 240),
+            cta_label: cleanText(s.cta_label, 40),
+            category_id:
+              s.category_id != null && s.category_id !== ''
+                ? toInt(s.category_id, 1)
+                : null,
+          };
+        })
+        .filter((s) => s.media_url || s.title);
+    } else {
+      heroSlides = current.hero_slides ?? [];
+    }
+
     await execute(
       `UPDATE site_settings SET
          marquee_text = ?, phone_primary = ?, whatsapp_number = ?,
@@ -76,7 +101,8 @@ export async function PUT(req: Request) {
          instagram_url = ?, facebook_url = ?, tiktok_url = ?,
          shipping_fee = ?, free_delivery_threshold = ?,
          hero_left_media_url = ?, hero_left_eyebrow = ?, hero_left_title = ?,
-         hero_right_media_url = ?, hero_right_eyebrow = ?, hero_right_title = ?
+         hero_right_media_url = ?, hero_right_eyebrow = ?, hero_right_title = ?,
+         hero_slides = ?
        WHERE id = 1`,
       [
         marquee,
@@ -96,6 +122,7 @@ export async function PUT(req: Request) {
         heroRightMedia,
         heroRightEyebrow,
         heroRightTitle,
+        JSON.stringify(heroSlides),
       ],
     );
 

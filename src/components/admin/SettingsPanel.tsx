@@ -1,9 +1,10 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import type { SiteSettings } from '@/lib/types';
+import type { Category, SiteSettings } from '@/lib/types';
 import { apiGet, apiSend } from './api';
 import HeroMediaField from './HeroMediaField';
+import HeroSlidesManager from './HeroSlidesManager';
 
 interface Props {
   onToast: (msg: string) => void;
@@ -11,6 +12,7 @@ interface Props {
 
 export default function SettingsPanel({ onToast }: Props) {
   const [s, setS] = useState<SiteSettings | null>(null);
+  const [categories, setCategories] = useState<Category[]>([]);
   const [saving, setSaving] = useState(false);
 
   // Password change
@@ -20,8 +22,12 @@ export default function SettingsPanel({ onToast }: Props) {
 
   useEffect(() => {
     void (async () => {
-      const res = await apiGet<SiteSettings>('/api/settings');
-      if (res.ok && res.data) setS(res.data);
+      const [settingsRes, catsRes] = await Promise.all([
+        apiGet<SiteSettings>('/api/settings'),
+        apiGet<Category[]>('/api/categories?all=1'),
+      ]);
+      if (settingsRes.ok && settingsRes.data) setS(settingsRes.data);
+      if (catsRes.ok && catsRes.data) setCategories(catsRes.data);
     })();
   }, []);
 
@@ -109,12 +115,22 @@ export default function SettingsPanel({ onToast }: Props) {
           />
         </section>
 
-        {/* Homepage Hero */}
+        {/* Hero Slider */}
         <section className="border border-hairline bg-surface p-5">
-          <h3 className="eyebrow mb-1">Homepage Hero</h3>
+          <h3 className="eyebrow mb-4">Hero Slider (full-width banner)</h3>
+          <HeroSlidesManager
+            slides={s.hero_slides ?? []}
+            categories={categories}
+            onChange={(next) => setS({ ...s, hero_slides: next } as SiteSettings)}
+          />
+        </section>
+
+        {/* Homepage Hero split panels */}
+        <section className="border border-hairline bg-surface p-5">
+          <h3 className="eyebrow mb-1">Split Hero Panels</h3>
           <p className="mb-4 text-xs text-muted">
-            The two large panels at the top of the store. Upload a photo or video
-            for each; leave empty to use the gradient fallback.
+            The two large panels below the slider. Upload a photo or video for
+            each; leave empty to use the gradient fallback.
           </p>
           <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
             {/* Left panel */}

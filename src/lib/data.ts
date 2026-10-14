@@ -29,7 +29,10 @@ export async function getSettings(): Promise<SiteSettings> {
   const rows = await query<SiteSettings>(
     'SELECT * FROM site_settings WHERE id = 1 LIMIT 1',
   );
-  return rows[0];
+  const settings = rows[0];
+  // hero_slides is a JSON column; normalize to an array.
+  settings.hero_slides = parseJson(settings.hero_slides, []);
+  return settings;
 }
 
 export async function getCategories(

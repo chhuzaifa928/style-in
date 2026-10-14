@@ -49,6 +49,18 @@ const config: Config = {
           '0%': { opacity: '0' },
           '100%': { opacity: '1' },
         },
+        'fade-up': {
+          '0%': { opacity: '0', transform: 'translateY(24px)' },
+          '100%': { opacity: '1', transform: 'translateY(0)' },
+        },
+        'ken-burns': {
+          '0%': { transform: 'scale(1)' },
+          '100%': { transform: 'scale(1.12)' },
+        },
+        'slide-fade': {
+          '0%': { opacity: '0', transform: 'translateX(40px)' },
+          '100%': { opacity: '1', transform: 'translateX(0)' },
+        },
       },
       animation: {
         marquee: 'marquee 28s linear infinite',
@@ -57,6 +69,9 @@ const config: Config = {
         'slide-in-left': 'slide-in-left 0.32s cubic-bezier(0.16,1,0.3,1)',
         'slide-up': 'slide-up 0.32s cubic-bezier(0.16,1,0.3,1)',
         'fade-in': 'fade-in 0.25s ease-out',
+        'fade-up': 'fade-up 0.6s cubic-bezier(0.16,1,0.3,1) forwards',
+        'ken-burns': 'ken-burns 7s ease-out forwards',
+        'slide-fade': 'slide-fade 0.6s cubic-bezier(0.16,1,0.3,1)',
       },
     },
   },

@@ -5,6 +5,10 @@ import type { Category, Product, SiteSettings } from '@/lib/types';
 import { discountPercent, isVideoUrl } from '@/lib/format';
 import { useCart } from './useCart';
 import ProductCard from './ProductCard';
+import ProductRail from './ProductRail';
+import HeroSlider from './HeroSlider';
+import Reveal from './Reveal';
+import Newsletter from './Newsletter';
 import QuickView from './QuickView';
 import CartDrawer from './CartDrawer';
 import CheckoutModal from './CheckoutModal';
@@ -101,8 +105,16 @@ export default function Storefront({ settings, categories, products }: Props) {
     return list;
   }, [products, activeCat, search, sort]);
 
-  const featured = useMemo(
-    () => products.filter((p) => p.is_featured).slice(0, 8),
+  const newArrivals = useMemo(() => products.slice(0, 12), [products]);
+  const bestSellers = useMemo(() => {
+    const feat = products.filter((p) => p.is_featured);
+    return (feat.length ? feat : products).slice(0, 12);
+  }, [products]);
+  const onSale = useMemo(
+    () =>
+      products
+        .filter((p) => discountPercent(p.actual_price, p.discounted_price) > 0)
+        .slice(0, 12),
     [products],
   );
 
@@ -236,8 +248,11 @@ export default function Storefront({ settings, categories, products }: Props) {
       </header>
 
       <main id="top">
+        {/* ── Full-width campaign hero slider (admin-managed) ── */}
+        <HeroSlider slides={settings.hero_slides ?? []} onCta={goShop} />
+
         {/* ── Hero split: Apparel vs Footwear ── */}
-        <section className="container-page grid grid-cols-1 gap-3 py-6 md:grid-cols-2 md:py-8">
+        <Reveal as="section" className="container-page grid grid-cols-1 gap-3 py-6 md:grid-cols-2 md:py-8">
           {[
             {
               media: settings.hero_left_media_url,
@@ -297,35 +312,61 @@ export default function Storefront({ settings, categories, products }: Props) {
               </div>
             </button>
           ))}
-        </section>
+        </Reveal>
 
-        {/* ── Featured rail ── */}
-        {featured.length > 0 && (
-          <section className="container-page py-4">
-            <div className="mb-4 flex items-center justify-between">
-              <h2 className="heading text-xl">Featured Drops</h2>
+        {/* ── Product rails ── */}
+        <ProductRail
+          title="New Arrivals"
+          products={newArrivals}
+          wishlist={wishlist}
+          onToggleWish={toggleWish}
+          onQuickView={setQuickView}
+          onQuickAdd={quickAdd}
+          onViewAll={() => goShop(null)}
+        />
+        <ProductRail
+          title="Best Sellers"
+          products={bestSellers}
+          wishlist={wishlist}
+          onToggleWish={toggleWish}
+          onQuickView={setQuickView}
+          onQuickAdd={quickAdd}
+          onViewAll={() => goShop(null)}
+        />
+
+        {/* Mid-page promo band */}
+        {onSale.length > 0 && (
+          <Reveal as="section" className="container-page py-4">
+            <div className="relative overflow-hidden bg-brand px-6 py-10 text-center text-white sm:py-14">
+              <span className="text-[11px] font-semibold uppercase tracking-[0.25em] text-white/80">
+                Limited Time
+              </span>
+              <h2 className="heading mt-2 text-3xl sm:text-4xl">
+                Season Sale — Up to 50% Off
+              </h2>
+              <p className="mx-auto mt-2 max-w-md text-sm text-white/85">
+                Marked-down pieces across apparel & footwear. While stock lasts.
+              </p>
               <button
                 onClick={() => goShop(null)}
-                className="text-sm font-semibold text-muted hover:text-brand"
+                className="btn mt-5 bg-white text-brand hover:bg-ink hover:text-white"
               >
-                View all
+                Shop the Sale
               </button>
             </div>
-            <div className="flex gap-4 overflow-x-auto no-scrollbar pb-2">
-              {featured.map((p) => (
-                <div key={p.id} className="w-[240px] flex-shrink-0">
-                  <ProductCard
-                    product={p}
-                    wished={wishlist.has(p.id)}
-                    onToggleWish={toggleWish}
-                    onQuickView={setQuickView}
-                    onQuickAdd={quickAdd}
-                  />
-                </div>
-              ))}
-            </div>
-          </section>
+          </Reveal>
         )}
+
+        <ProductRail
+          title="On Sale"
+          accent
+          products={onSale}
+          wishlist={wishlist}
+          onToggleWish={toggleWish}
+          onQuickView={setQuickView}
+          onQuickAdd={quickAdd}
+          onViewAll={() => goShop(null)}
+        />
 
         {/* ── PLP ── */}
         <section id="shop" className="container-page scroll-mt-24 py-6">
@@ -396,37 +437,21 @@ export default function Storefront({ settings, categories, products }: Props) {
         </section>
       </main>
 
+      {/* ── Newsletter ── */}
+      <Newsletter />
+
       {/* ── Footer ── */}
-      <footer className="mt-10 border-t border-hairline bg-surface">
-        <div className="container-page grid grid-cols-1 gap-8 py-12 sm:grid-cols-2 lg:grid-cols-4">
-          <div>
+      <footer className="border-t border-hairline bg-surface">
+        <div className="container-page grid grid-cols-2 gap-8 py-12 md:grid-cols-4">
+          {/* Brand + socials */}
+          <div className="col-span-2 md:col-span-1">
             <p className="heading text-2xl">
               StyleIn<span className="text-brand">.</span>
             </p>
             <p className="mt-3 max-w-xs text-sm text-muted">
               Editorial streetwear & kinetic footwear. Cash on delivery nationwide.
             </p>
-          </div>
-          <div>
-            <h3 className="eyebrow mb-3">Contact</h3>
-            <ul className="space-y-2 text-sm text-muted">
-              {settings.phone_primary && <li>Phone: {settings.phone_primary}</li>}
-              {settings.whatsapp_number && (
-                <li>WhatsApp: {settings.whatsapp_number}</li>
-              )}
-              {settings.concierge_email && <li>{settings.concierge_email}</li>}
-            </ul>
-          </div>
-          <div>
-            <h3 className="eyebrow mb-3">Visit</h3>
-            <ul className="space-y-2 text-sm text-muted">
-              {settings.address && <li>{settings.address}</li>}
-              {settings.store_hours && <li>{settings.store_hours}</li>}
-            </ul>
-          </div>
-          <div>
-            <h3 className="eyebrow mb-3">Follow</h3>
-            <div className="flex items-center gap-3">
+            <div className="mt-4 flex items-center gap-3">
               {[
                 { url: settings.instagram_url, Icon: IconInstagram, label: 'Instagram' },
                 { url: settings.facebook_url, Icon: IconFacebook, label: 'Facebook' },
@@ -456,15 +481,91 @@ export default function Storefront({ settings, categories, products }: Props) {
                 ),
               )}
             </div>
-            <p className="mt-3 text-[11px] text-muted">
-              Add your profile links in Admin → Settings.
-            </p>
+          </div>
+
+          {/* Shop */}
+          <div>
+            <h3 className="eyebrow mb-3">Shop</h3>
+            <ul className="space-y-2 text-sm">
+              <li>
+                <button onClick={() => goShop(null)} className="text-muted transition hover:text-brand">
+                  All Products
+                </button>
+              </li>
+              {topCategories.map((c) => (
+                <li key={c.id}>
+                  <button onClick={() => goShop(c.id)} className="text-muted transition hover:text-brand">
+                    {c.name}
+                  </button>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          {/* Customer Care */}
+          <div>
+            <h3 className="eyebrow mb-3">Customer Care</h3>
+            <ul className="space-y-2 text-sm">
+              {settings.concierge_email && (
+                <li>
+                  <a href={`mailto:${settings.concierge_email}`} className="text-muted transition hover:text-brand">
+                    Email Support
+                  </a>
+                </li>
+              )}
+              {waLink && (
+                <li>
+                  <a href={waLink} target="_blank" rel="noreferrer" className="text-muted transition hover:text-brand">
+                    WhatsApp Orders
+                  </a>
+                </li>
+              )}
+              <li>
+                <button onClick={() => setCartOpen(true)} className="text-muted transition hover:text-brand">
+                  Your Bag
+                </button>
+              </li>
+              <li><span className="text-muted">Cash on Delivery</span></li>
+            </ul>
+          </div>
+
+          {/* Contact & Visit */}
+          <div>
+            <h3 className="eyebrow mb-3">Contact &amp; Visit</h3>
+            <ul className="space-y-2 text-sm text-muted">
+              {settings.phone_primary && <li>{settings.phone_primary}</li>}
+              {settings.concierge_email && <li>{settings.concierge_email}</li>}
+              {settings.address && <li>{settings.address}</li>}
+              {settings.store_hours && <li>{settings.store_hours}</li>}
+            </ul>
           </div>
         </div>
+
+        {/* COD / payment / trust badges */}
+        <div className="border-t border-hairline">
+          <div className="container-page flex flex-wrap items-center justify-center gap-2 py-5 sm:justify-start">
+            {[
+              'Cash on Delivery',
+              `Free Delivery over PKR ${Math.round(Number(settings.free_delivery_threshold)).toLocaleString('en-PK')}`,
+              'Secure Checkout',
+              'Nationwide Shipping',
+              'Easy Exchanges',
+            ].map((b) => (
+              <span
+                key={b}
+                className="border border-hairline px-3 py-1.5 text-[11px] font-semibold uppercase tracking-wide text-muted"
+              >
+                {b}
+              </span>
+            ))}
+          </div>
+        </div>
+
+        {/* Copyright */}
         <div className="border-t border-hairline">
           <div className="container-page flex flex-col items-center justify-between gap-2 py-4 text-xs text-muted sm:flex-row">
             <span>© {new Date().getFullYear()} StyleIn. All rights reserved.</span>
-            <span>Cash on Delivery · Free delivery over PKR {Math.round(Number(settings.free_delivery_threshold)).toLocaleString('en-PK')}</span>
+            <span>Designed in Pakistan · Cash on Delivery nationwide</span>
           </div>
         </div>
       </footer>

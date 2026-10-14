@@ -29,6 +29,7 @@ CREATE TABLE IF NOT EXISTS `site_settings` (
   `hero_right_media_url`   VARCHAR(500)   NOT NULL DEFAULT '',
   `hero_right_eyebrow`     VARCHAR(120)   NOT NULL DEFAULT 'Kinetic Footwear',
   `hero_right_title`       VARCHAR(160)   NOT NULL DEFAULT 'Sole Movement',
+  `hero_slides`            JSON           NULL,
   `updated_at`             TIMESTAMP      NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   CONSTRAINT `chk_single_row` CHECK (`id` = 1)
@@ -150,6 +151,17 @@ CREATE TABLE IF NOT EXISTS `admin_users` (
 INSERT INTO `admin_users` (`username`, `password_hash`, `role`) VALUES
   ('admin', '$2a$10$Y4nEg6TKpNNBFNM3Y/ran.g7gusshgW1wIte2cnUCYU79qvM6Z7le', 'admin')
   ON DUPLICATE KEY UPDATE `username` = `username`;
+
+-- ────────────────────────────────────────────────────────────
+-- 7. newsletter_subscribers  (footer signups)
+-- ────────────────────────────────────────────────────────────
+CREATE TABLE IF NOT EXISTS `newsletter_subscribers` (
+  `id`         INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  `email`      VARCHAR(190) NOT NULL,
+  `created_at` TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `uq_newsletter_email` (`email`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 SET FOREIGN_KEY_CHECKS = 1;
 
