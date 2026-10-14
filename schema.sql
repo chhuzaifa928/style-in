@@ -80,6 +80,7 @@ CREATE TABLE IF NOT EXISTS `products` (
   `discounted_price`  DECIMAL(10,2) NOT NULL DEFAULT 0.00,  -- selling price
   `sizes_available`   JSON          NULL,                   -- ["S","M","L"] or ["40","41"]
   `stock`             INT           NOT NULL DEFAULT 0,
+  `sort_order`        INT           NOT NULL DEFAULT 0,      -- lower shows first
   `is_featured`       TINYINT(1)    NOT NULL DEFAULT 0,
   `is_active`         TINYINT(1)    NOT NULL DEFAULT 1,      -- 0 = archived
   `created_at`        TIMESTAMP     NOT NULL DEFAULT CURRENT_TIMESTAMP,

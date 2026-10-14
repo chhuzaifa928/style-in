@@ -108,7 +108,8 @@ export async function getProducts(
       break;
     case 'newest':
     default:
-      orderBy = 'p.created_at DESC';
+      // Admin-set display order wins; newest first as the tie-breaker.
+      orderBy = 'p.sort_order ASC, p.created_at DESC';
   }
 
   const whereSql = where.length ? `WHERE ${where.join(' AND ')}` : '';

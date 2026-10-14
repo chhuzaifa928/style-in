@@ -5,7 +5,7 @@ import type { Category, Product } from '@/lib/types';
 import { formatPKR, discountPercent } from '@/lib/format';
 import { apiGet, apiSend } from './api';
 import ImageManager, { DraftImage } from './ImageManager';
-import { IconClose, IconPlus, IconTrash } from '../icons';
+import { IconClose, IconPlus, IconTrash, IconChevron } from '../icons';
 
 const APPAREL_SIZES = ['XS', 'S', 'M', 'L', 'XL', 'XXL'];
 const SHOE_SIZES = ['39', '40', '41', '42', '43', '44', '45'];
@@ -48,6 +48,7 @@ export default function ProductsPanel({ categories, onToast }: Props) {
   const [editingId, setEditingId] = useState<number | null>(null);
   const [form, setForm] = useState<FormState>(EMPTY_FORM);
   const [saving, setSaving] = useState(false);
+  const [reordering, setReordering] = useState(false);
   const [customSize, setCustomSize] = useState('');
 
   const load = async () => {
@@ -177,6 +178,24 @@ export default function ProductsPanel({ categories, onToast }: Props) {
     await load();
   };
 
+  // Move a product up/down and persist the whole list's new order.
+  const move = async (idx: number, dir: -1 | 1) => {
+    const j = idx + dir;
+    if (j < 0 || j >= products.length || reordering) return;
+    const next = products.slice();
+    [next[idx], next[j]] = [next[j], next[idx]];
+    setProducts(next);
+    setReordering(true);
+    const res = await apiSend('/api/products/reorder', 'POST', {
+      ids: next.map((p) => p.id),
+    });
+    setReordering(false);
+    if (!res.ok) {
+      onToast(res.error || 'Could not save order');
+      await load(); // revert to server truth
+    }
+  };
+
   const archive = async (p: Product) => {
     if (!confirm(`Archive "${p.name}"? It will be hidden from the store.`)) return;
     const res = await apiSend('/api/products/' + p.id, 'DELETE');
@@ -229,6 +248,7 @@ export default function ProductsPanel({ categories, onToast }: Props) {
           <table className="w-full min-w-[720px] text-sm">
             <thead>
               <tr className="border-b border-hairline text-left text-xs uppercase tracking-wide text-muted">
+                <th className="px-2 py-3 text-center">Order</th>
                 <th className="px-4 py-3">Product</th>
                 <th className="px-4 py-3">Category</th>
                 <th className="px-4 py-3">Price</th>
@@ -238,13 +258,33 @@ export default function ProductsPanel({ categories, onToast }: Props) {
               </tr>
             </thead>
             <tbody>
-              {products.map((p) => {
+              {products.map((p, idx) => {
                 const cover =
                   p.images?.find((i) => i.is_primary)?.image_url ??
                   p.images?.[0]?.image_url;
                 const d = discountPercent(p.actual_price, p.discounted_price);
                 return (
                   <tr key={p.id} className="border-b border-hairline last:border-0">
+                    <td className="px-2 py-3">
+                      <div className="flex flex-col items-center">
+                        <button
+                          onClick={() => move(idx, -1)}
+                          disabled={idx === 0 || reordering}
+                          title="Move up"
+                          className="grid h-6 w-6 place-items-center text-muted hover:text-ink disabled:opacity-25"
+                        >
+                          <IconChevron className="h-4 w-4 -rotate-90" />
+                        </button>
+                        <button
+                          onClick={() => move(idx, 1)}
+                          disabled={idx === products.length - 1 || reordering}
+                          title="Move down"
+                          className="grid h-6 w-6 place-items-center text-muted hover:text-ink disabled:opacity-25"
+                        >
+                          <IconChevron className="h-4 w-4 rotate-90" />
+                        </button>
+                      </div>
+                    </td>
                     <td className="px-4 py-3">
                       <div className="flex items-center gap-3">
                         <div className="h-12 w-10 flex-shrink-0 overflow-hidden bg-[#F1F0EC]">
