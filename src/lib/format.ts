@@ -21,3 +21,9 @@ export function discountPercent(
 export function hasDiscount(actual: number, discounted: number): boolean {
   return discountPercent(actual, discounted) > 0;
 }
+
+/** True when a media URL points at a video file we can play inline. */
+export function isVideoUrl(url: string | null | undefined): boolean {
+  if (!url) return false;
+  return /\.(mp4|webm|mov|m4v|ogg)(\?.*)?$/i.test(url);
+}

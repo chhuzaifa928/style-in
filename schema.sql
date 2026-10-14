@@ -23,6 +23,12 @@ CREATE TABLE IF NOT EXISTS `site_settings` (
   `tiktok_url`             VARCHAR(300)   NOT NULL DEFAULT '',
   `shipping_fee`           DECIMAL(10,2)  NOT NULL DEFAULT 200.00,
   `free_delivery_threshold` DECIMAL(10,2) NOT NULL DEFAULT 3500.00,
+  `hero_left_media_url`    VARCHAR(500)   NOT NULL DEFAULT '',
+  `hero_left_eyebrow`      VARCHAR(120)   NOT NULL DEFAULT 'Streetwear Apparel',
+  `hero_left_title`        VARCHAR(160)   NOT NULL DEFAULT 'The Off-Duty Edit',
+  `hero_right_media_url`   VARCHAR(500)   NOT NULL DEFAULT '',
+  `hero_right_eyebrow`     VARCHAR(120)   NOT NULL DEFAULT 'Kinetic Footwear',
+  `hero_right_title`       VARCHAR(160)   NOT NULL DEFAULT 'Sole Movement',
   `updated_at`             TIMESTAMP      NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   CONSTRAINT `chk_single_row` CHECK (`id` = 1)

@@ -44,12 +44,39 @@ export async function PUT(req: Request) {
       body.free_delivery_threshold ?? current.free_delivery_threshold,
     );
 
+    const heroLeftMedia =
+      body.hero_left_media_url !== undefined
+        ? cleanUrl(body.hero_left_media_url, 500)
+        : current.hero_left_media_url;
+    const heroLeftEyebrow = cleanText(
+      body.hero_left_eyebrow ?? current.hero_left_eyebrow,
+      120,
+    );
+    const heroLeftTitle = cleanText(
+      body.hero_left_title ?? current.hero_left_title,
+      160,
+    );
+    const heroRightMedia =
+      body.hero_right_media_url !== undefined
+        ? cleanUrl(body.hero_right_media_url, 500)
+        : current.hero_right_media_url;
+    const heroRightEyebrow = cleanText(
+      body.hero_right_eyebrow ?? current.hero_right_eyebrow,
+      120,
+    );
+    const heroRightTitle = cleanText(
+      body.hero_right_title ?? current.hero_right_title,
+      160,
+    );
+
     await execute(
       `UPDATE site_settings SET
          marquee_text = ?, phone_primary = ?, whatsapp_number = ?,
          concierge_email = ?, address = ?, store_hours = ?,
          instagram_url = ?, facebook_url = ?, tiktok_url = ?,
-         shipping_fee = ?, free_delivery_threshold = ?
+         shipping_fee = ?, free_delivery_threshold = ?,
+         hero_left_media_url = ?, hero_left_eyebrow = ?, hero_left_title = ?,
+         hero_right_media_url = ?, hero_right_eyebrow = ?, hero_right_title = ?
        WHERE id = 1`,
       [
         marquee,
@@ -63,6 +90,12 @@ export async function PUT(req: Request) {
         tiktok,
         shippingFee,
         threshold,
+        heroLeftMedia,
+        heroLeftEyebrow,
+        heroLeftTitle,
+        heroRightMedia,
+        heroRightEyebrow,
+        heroRightTitle,
       ],
     );
 

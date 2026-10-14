@@ -21,11 +21,17 @@ export const runtime = 'nodejs';
  *     execution path).
  */
 
-const MAX_BYTES = 5 * 1024 * 1024; // 5MB
+const MAX_IMAGE_BYTES = 5 * 1024 * 1024; // 5MB for images
+const MAX_VIDEO_BYTES = 50 * 1024 * 1024; // 50MB for hero videos
 const ALLOWED: Record<string, string> = {
   'image/jpeg': 'jpg',
   'image/png': 'png',
   'image/webp': 'webp',
+};
+// Only permitted when the caller opts in with ?allow=media (hero background).
+const ALLOWED_VIDEO: Record<string, string> = {
+  'video/mp4': 'mp4',
+  'video/webm': 'webm',
 };
 
 const UPLOAD_DIR = path.join(process.cwd(), 'public', 'uploads');
@@ -65,6 +71,29 @@ function sniffType(bytes: Uint8Array): string | null {
   return null;
 }
 
+/** Inspect leading bytes to confirm a real video container (mp4 / webm). */
+function sniffVideoType(bytes: Uint8Array): string | null {
+  // MP4 / MOV: bytes 4..7 spell "ftyp"
+  if (
+    bytes[4] === 0x66 &&
+    bytes[5] === 0x74 &&
+    bytes[6] === 0x79 &&
+    bytes[7] === 0x70
+  ) {
+    return 'video/mp4';
+  }
+  // WEBM / Matroska: EBML header 1A 45 DF A3
+  if (
+    bytes[0] === 0x1a &&
+    bytes[1] === 0x45 &&
+    bytes[2] === 0xdf &&
+    bytes[3] === 0xa3
+  ) {
+    return 'video/webm';
+  }
+  return null;
+}
+
 export async function POST(req: Request) {
   return guarded(async () => {
     await requireAdmin();
@@ -74,6 +103,11 @@ export async function POST(req: Request) {
     if (!contentType.includes('multipart/form-data')) {
       return fail('Expected multipart/form-data', 415);
     }
+
+    // Video uploads (hero background) are only allowed when explicitly opted
+    // into with ?allow=media. The product uploader stays strictly image-only.
+    const allowMedia =
+      new URL(req.url).searchParams.get('allow') === 'media';
 
     const form = await req.formData();
     const entries = [
@@ -90,26 +124,42 @@ export async function POST(req: Request) {
 
     for (const file of entries) {
       if (file.size === 0) return fail('Empty file rejected', 400);
-      if (file.size > MAX_BYTES) {
-        return fail(`"${file.name}" exceeds the 5MB limit`, 413);
+
+      const isVideo = allowMedia && !!ALLOWED_VIDEO[file.type];
+      const isImage = !!ALLOWED[file.type];
+
+      if (!isImage && !isVideo) {
+        return fail(`"${file.name}" has an unsupported type`, 415);
       }
 
-      // Declared MIME must be whitelisted…
-      if (!ALLOWED[file.type]) {
-        return fail(`"${file.name}" has an unsupported type`, 415);
+      const limit = isVideo ? MAX_VIDEO_BYTES : MAX_IMAGE_BYTES;
+      if (file.size > limit) {
+        return fail(
+          `"${file.name}" exceeds the ${isVideo ? '50MB' : '5MB'} limit`,
+          413,
+        );
       }
 
       const buf = Buffer.from(await file.arrayBuffer());
 
-      // …and the real bytes must match an allowed signature.
-      const sniffed = sniffType(buf.subarray(0, 12));
-      if (!sniffed || !ALLOWED[sniffed]) {
-        return fail(`"${file.name}" is not a valid image`, 415);
+      // The real bytes must match an allowed signature.
+      let ext: string | null = null;
+      if (isVideo) {
+        const sniffed = sniffVideoType(buf.subarray(0, 16));
+        if (!sniffed || !ALLOWED_VIDEO[sniffed]) {
+          return fail(`"${file.name}" is not a valid video`, 415);
+        }
+        ext = ALLOWED_VIDEO[sniffed];
+      } else {
+        const sniffed = sniffType(buf.subarray(0, 12));
+        if (!sniffed || !ALLOWED[sniffed]) {
+          return fail(`"${file.name}" is not a valid image`, 415);
+        }
+        ext = ALLOWED[sniffed];
       }
 
       // Generate a safe, unique, non-guessable filename. Client name is never
       // used, eliminating path-traversal and overwrite risks.
-      const ext = ALLOWED[sniffed];
       const filename = `${Date.now()}-${randomUUID()}.${ext}`;
       const dest = path.join(UPLOAD_DIR, filename);
 

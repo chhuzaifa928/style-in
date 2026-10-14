@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import type { SiteSettings } from '@/lib/types';
 import { apiGet, apiSend } from './api';
+import HeroMediaField from './HeroMediaField';
 
 interface Props {
   onToast: (msg: string) => void;
@@ -106,6 +107,53 @@ export default function SettingsPanel({ onToast }: Props) {
             onChange={(e) => set('marquee_text', e.target.value)}
             placeholder="FREE DELIVERY OVER PKR 3,500 • NEW DROPS EVERY FRIDAY"
           />
+        </section>
+
+        {/* Homepage Hero */}
+        <section className="border border-hairline bg-surface p-5">
+          <h3 className="eyebrow mb-1">Homepage Hero</h3>
+          <p className="mb-4 text-xs text-muted">
+            The two large panels at the top of the store. Upload a photo or video
+            for each; leave empty to use the gradient fallback.
+          </p>
+          <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+            {/* Left panel */}
+            <div className="flex flex-col gap-3">
+              <span className="text-xs font-bold uppercase tracking-wide text-ink">
+                Left panel (Apparel)
+              </span>
+              <HeroMediaField
+                value={s.hero_left_media_url ?? ''}
+                onChange={(url) => set('hero_left_media_url', url)}
+              />
+              <div>
+                <label className="label">Eyebrow</label>
+                <input className="input" value={s.hero_left_eyebrow ?? ''} onChange={(e) => set('hero_left_eyebrow', e.target.value)} placeholder="Streetwear Apparel" />
+              </div>
+              <div>
+                <label className="label">Title</label>
+                <input className="input" value={s.hero_left_title ?? ''} onChange={(e) => set('hero_left_title', e.target.value)} placeholder="The Off-Duty Edit" />
+              </div>
+            </div>
+            {/* Right panel */}
+            <div className="flex flex-col gap-3">
+              <span className="text-xs font-bold uppercase tracking-wide text-ink">
+                Right panel (Footwear)
+              </span>
+              <HeroMediaField
+                value={s.hero_right_media_url ?? ''}
+                onChange={(url) => set('hero_right_media_url', url)}
+              />
+              <div>
+                <label className="label">Eyebrow</label>
+                <input className="input" value={s.hero_right_eyebrow ?? ''} onChange={(e) => set('hero_right_eyebrow', e.target.value)} placeholder="Kinetic Footwear" />
+              </div>
+              <div>
+                <label className="label">Title</label>
+                <input className="input" value={s.hero_right_title ?? ''} onChange={(e) => set('hero_right_title', e.target.value)} placeholder="Sole Movement" />
+              </div>
+            </div>
+          </div>
         </section>
 
         {/* Contact */}

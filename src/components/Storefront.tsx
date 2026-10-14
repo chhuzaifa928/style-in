@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useState } from 'react';
 import type { Category, Product, SiteSettings } from '@/lib/types';
-import { discountPercent } from '@/lib/format';
+import { discountPercent, isVideoUrl } from '@/lib/format';
 import { useCart } from './useCart';
 import ProductCard from './ProductCard';
 import QuickView from './QuickView';
@@ -228,15 +228,17 @@ export default function Storefront({ settings, categories, products }: Props) {
         <section className="container-page grid grid-cols-1 gap-3 py-6 md:grid-cols-2 md:py-8">
           {[
             {
-              eyebrow: 'Streetwear Apparel',
-              title: 'The Off-Duty Edit',
+              media: settings.hero_left_media_url,
+              eyebrow: settings.hero_left_eyebrow || 'Streetwear Apparel',
+              title: settings.hero_left_title || 'The Off-Duty Edit',
               cta: 'Shop Clothes',
               cat: topCategories.find((c) => /cloth/i.test(c.name))?.id ?? null,
               bg: 'linear-gradient(135deg,#1b1b1b,#3a3a3a)',
             },
             {
-              eyebrow: 'Kinetic Footwear',
-              title: 'Sole Movement',
+              media: settings.hero_right_media_url,
+              eyebrow: settings.hero_right_eyebrow || 'Kinetic Footwear',
+              title: settings.hero_right_title || 'Sole Movement',
               cta: 'Shop Shoes',
               cat: topCategories.find((c) => /shoe/i.test(c.name))?.id ?? null,
               bg: 'linear-gradient(135deg,#C91A25,#7d0f16)',
@@ -248,7 +250,27 @@ export default function Storefront({ settings, categories, products }: Props) {
               className="group relative flex aspect-[4/5] items-end overflow-hidden text-left sm:aspect-[16/10] md:aspect-[4/5]"
               style={{ background: h.bg }}
             >
-              <div className="absolute inset-0 bg-black/10 transition-transform duration-700 group-hover:scale-105" />
+              {/* Background media (image or video) with gradient fallback */}
+              {h.media &&
+                (isVideoUrl(h.media) ? (
+                  <video
+                    src={h.media}
+                    autoPlay
+                    muted
+                    loop
+                    playsInline
+                    preload="metadata"
+                    className="absolute inset-0 h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
+                  />
+                ) : (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img
+                    src={h.media}
+                    alt={h.title}
+                    className="absolute inset-0 h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
+                  />
+                ))}
+              <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/15 to-transparent" />
               <div className="relative z-10 p-6 md:p-8">
                 <span className="text-[11px] font-semibold uppercase tracking-[0.2em] text-white/80">
                   {h.eyebrow}

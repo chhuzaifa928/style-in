@@ -13,6 +13,12 @@ export interface SiteSettings {
   tiktok_url: string;
   shipping_fee: number;
   free_delivery_threshold: number;
+  hero_left_media_url: string;
+  hero_left_eyebrow: string;
+  hero_left_title: string;
+  hero_right_media_url: string;
+  hero_right_eyebrow: string;
+  hero_right_title: string;
   updated_at?: string;
 }
 
