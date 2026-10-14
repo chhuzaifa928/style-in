@@ -97,7 +97,7 @@ export default function ProductCard({
               -{pct}% OFF
             </span>
           )}
-          {product.is_featured && !outOfStock && (
+          {!!product.is_featured && !outOfStock && (
             <span className="bg-ink px-2.5 py-1 text-[11px] font-bold uppercase tracking-wide text-white">
               New
             </span>
