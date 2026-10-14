@@ -18,6 +18,10 @@ import {
   IconSearch,
   IconChevron,
   IconCheck,
+  IconInstagram,
+  IconFacebook,
+  IconTiktok,
+  IconWhatsApp,
 } from './icons';
 
 interface Props {
@@ -111,6 +115,14 @@ export default function Storefront({ settings, categories, products }: Props) {
     cart.add(p, size, 1);
     showToast(`Added ${p.name}${size ? ` · ${size}` : ''} to bag`);
   };
+
+  // Build a wa.me link from the configured WhatsApp number (digits only).
+  const waDigits = (settings.whatsapp_number || '').replace(/\D/g, '');
+  const waLink = waDigits
+    ? `https://wa.me/${waDigits}?text=${encodeURIComponent(
+        'Hi StyleIn! I would like to order.',
+      )}`
+    : '';
 
   const marqueeItems = (settings.marquee_text || '')
     .split('•')
@@ -414,23 +426,39 @@ export default function Storefront({ settings, categories, products }: Props) {
           </div>
           <div>
             <h3 className="eyebrow mb-3">Follow</h3>
-            <ul className="space-y-2 text-sm">
-              {settings.instagram_url && (
-                <li>
-                  <a href={settings.instagram_url} className="text-muted hover:text-brand" target="_blank" rel="noreferrer">Instagram</a>
-                </li>
+            <div className="flex items-center gap-3">
+              {[
+                { url: settings.instagram_url, Icon: IconInstagram, label: 'Instagram' },
+                { url: settings.facebook_url, Icon: IconFacebook, label: 'Facebook' },
+                { url: settings.tiktok_url, Icon: IconTiktok, label: 'TikTok' },
+                { url: waLink, Icon: IconWhatsApp, label: 'WhatsApp' },
+              ].map(({ url, Icon, label }) =>
+                url ? (
+                  <a
+                    key={label}
+                    href={url}
+                    aria-label={label}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="grid h-10 w-10 place-items-center rounded-full border border-hairline text-ink transition hover:border-brand hover:bg-brand hover:text-white"
+                  >
+                    <Icon className="h-5 w-5" />
+                  </a>
+                ) : (
+                  <span
+                    key={label}
+                    aria-label={`${label} (not set)`}
+                    title={`${label} link not set — add it in Admin → Settings`}
+                    className="grid h-10 w-10 place-items-center rounded-full border border-hairline text-muted/40"
+                  >
+                    <Icon className="h-5 w-5" />
+                  </span>
+                ),
               )}
-              {settings.facebook_url && (
-                <li>
-                  <a href={settings.facebook_url} className="text-muted hover:text-brand" target="_blank" rel="noreferrer">Facebook</a>
-                </li>
-              )}
-              {settings.tiktok_url && (
-                <li>
-                  <a href={settings.tiktok_url} className="text-muted hover:text-brand" target="_blank" rel="noreferrer">TikTok</a>
-                </li>
-              )}
-            </ul>
+            </div>
+            <p className="mt-3 text-[11px] text-muted">
+              Add your profile links in Admin → Settings.
+            </p>
           </div>
         </div>
         <div className="border-t border-hairline">
@@ -606,6 +634,25 @@ export default function Storefront({ settings, categories, products }: Props) {
             </button>
           </div>
         </div>
+      )}
+
+      {/* ── Floating WhatsApp button (stays on screen while scrolling) ── */}
+      {waLink && (
+        <a
+          href={waLink}
+          target="_blank"
+          rel="noreferrer"
+          aria-label="Chat with us on WhatsApp"
+          className="group fixed bottom-20 right-4 z-[45] flex items-center gap-2 md:bottom-6 md:right-6"
+        >
+          <span className="hidden rounded-full bg-ink px-3 py-1.5 text-xs font-semibold text-white opacity-0 shadow transition-opacity group-hover:opacity-100 md:inline">
+            Order on WhatsApp
+          </span>
+          <span className="relative grid h-14 w-14 place-items-center rounded-full bg-[#25D366] text-white shadow-lg transition-transform hover:scale-105">
+            <span className="absolute inset-0 animate-sonar rounded-full bg-[#25D366]" />
+            <IconWhatsApp className="relative h-7 w-7" />
+          </span>
+        </a>
       )}
 
       {/* ── Toast ── */}
