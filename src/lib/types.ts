@@ -25,9 +25,13 @@ export interface SiteSettings {
   hero_left_media_url: string;
   hero_left_eyebrow: string;
   hero_left_title: string;
+  hero_left_cta_label: string;
+  hero_left_category_id: number | null;
   hero_right_media_url: string;
   hero_right_eyebrow: string;
   hero_right_title: string;
+  hero_right_cta_label: string;
+  hero_right_category_id: number | null;
   hero_slides: HeroSlide[];
   updated_at?: string;
 }

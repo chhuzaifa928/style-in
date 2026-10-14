@@ -258,16 +258,22 @@ export default function Storefront({ settings, categories, products }: Props) {
               media: settings.hero_left_media_url,
               eyebrow: settings.hero_left_eyebrow || 'Streetwear Apparel',
               title: settings.hero_left_title || 'The Off-Duty Edit',
-              cta: 'Shop Clothes',
-              cat: topCategories.find((c) => /cloth/i.test(c.name))?.id ?? null,
+              cta: settings.hero_left_cta_label || 'Shop Now',
+              cat:
+                settings.hero_left_category_id ??
+                topCategories.find((c) => /cloth/i.test(c.name))?.id ??
+                null,
               bg: 'linear-gradient(135deg,#1b1b1b,#3a3a3a)',
             },
             {
               media: settings.hero_right_media_url,
               eyebrow: settings.hero_right_eyebrow || 'Kinetic Footwear',
               title: settings.hero_right_title || 'Sole Movement',
-              cta: 'Shop Shoes',
-              cat: topCategories.find((c) => /shoe/i.test(c.name))?.id ?? null,
+              cta: settings.hero_right_cta_label || 'Shop Now',
+              cat:
+                settings.hero_right_category_id ??
+                topCategories.find((c) => /shoe/i.test(c.name))?.id ??
+                null,
               bg: 'linear-gradient(135deg,#C91A25,#7d0f16)',
             },
           ].map((h) => (

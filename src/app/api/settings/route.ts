@@ -69,6 +69,26 @@ export async function PUT(req: Request) {
       body.hero_right_title ?? current.hero_right_title,
       160,
     );
+    const heroLeftCta = cleanText(
+      body.hero_left_cta_label ?? current.hero_left_cta_label,
+      40,
+    );
+    const heroRightCta = cleanText(
+      body.hero_right_cta_label ?? current.hero_right_cta_label,
+      40,
+    );
+    const heroLeftCat =
+      body.hero_left_category_id !== undefined
+        ? body.hero_left_category_id
+          ? toInt(body.hero_left_category_id, 1)
+          : null
+        : current.hero_left_category_id;
+    const heroRightCat =
+      body.hero_right_category_id !== undefined
+        ? body.hero_right_category_id
+          ? toInt(body.hero_right_category_id, 1)
+          : null
+        : current.hero_right_category_id;
 
     // Hero slider: validate & clean each slide; cap at 8.
     let heroSlides: HeroSlide[];
@@ -101,7 +121,9 @@ export async function PUT(req: Request) {
          instagram_url = ?, facebook_url = ?, tiktok_url = ?,
          shipping_fee = ?, free_delivery_threshold = ?,
          hero_left_media_url = ?, hero_left_eyebrow = ?, hero_left_title = ?,
+         hero_left_cta_label = ?, hero_left_category_id = ?,
          hero_right_media_url = ?, hero_right_eyebrow = ?, hero_right_title = ?,
+         hero_right_cta_label = ?, hero_right_category_id = ?,
          hero_slides = ?
        WHERE id = 1`,
       [
@@ -119,9 +141,13 @@ export async function PUT(req: Request) {
         heroLeftMedia,
         heroLeftEyebrow,
         heroLeftTitle,
+        heroLeftCta,
+        heroLeftCat,
         heroRightMedia,
         heroRightEyebrow,
         heroRightTitle,
+        heroRightCta,
+        heroRightCat,
         JSON.stringify(heroSlides),
       ],
     );

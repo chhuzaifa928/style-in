@@ -150,6 +150,21 @@ export default function SettingsPanel({ onToast }: Props) {
                 <label className="label">Title</label>
                 <input className="input" value={s.hero_left_title ?? ''} onChange={(e) => set('hero_left_title', e.target.value)} placeholder="The Off-Duty Edit" />
               </div>
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="label">Button Text</label>
+                  <input className="input" value={s.hero_left_cta_label ?? ''} onChange={(e) => set('hero_left_cta_label', e.target.value)} placeholder="Shop Now" />
+                </div>
+                <div>
+                  <label className="label">Links To</label>
+                  <select className="input" value={s.hero_left_category_id ?? ''} onChange={(e) => set('hero_left_category_id', e.target.value ? Number(e.target.value) : '')}>
+                    <option value="">All Products</option>
+                    {categories.map((c) => (
+                      <option key={c.id} value={c.id}>{c.name}</option>
+                    ))}
+                  </select>
+                </div>
+              </div>
             </div>
             {/* Right panel */}
             <div className="flex flex-col gap-3">
@@ -167,6 +182,21 @@ export default function SettingsPanel({ onToast }: Props) {
               <div>
                 <label className="label">Title</label>
                 <input className="input" value={s.hero_right_title ?? ''} onChange={(e) => set('hero_right_title', e.target.value)} placeholder="Sole Movement" />
+              </div>
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="label">Button Text</label>
+                  <input className="input" value={s.hero_right_cta_label ?? ''} onChange={(e) => set('hero_right_cta_label', e.target.value)} placeholder="Shop Now" />
+                </div>
+                <div>
+                  <label className="label">Links To</label>
+                  <select className="input" value={s.hero_right_category_id ?? ''} onChange={(e) => set('hero_right_category_id', e.target.value ? Number(e.target.value) : '')}>
+                    <option value="">All Products</option>
+                    {categories.map((c) => (
+                      <option key={c.id} value={c.id}>{c.name}</option>
+                    ))}
+                  </select>
+                </div>
               </div>
             </div>
           </div>
