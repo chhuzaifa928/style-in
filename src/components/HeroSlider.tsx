@@ -20,12 +20,13 @@ export default function HeroSlider({ slides, onCta }: Props) {
   const timer = useRef<ReturnType<typeof setInterval> | null>(null);
 
   const count = slides.length;
+  const AUTOPLAY_MS = 5000;
 
   useEffect(() => {
     if (count <= 1 || paused) return;
     timer.current = setInterval(
       () => setActive((i) => (i + 1) % count),
-      6000,
+      AUTOPLAY_MS,
     );
     return () => {
       if (timer.current) clearInterval(timer.current);
@@ -105,6 +106,20 @@ export default function HeroSlider({ slides, onCta }: Props) {
           </div>
         );
       })}
+
+      {/* Auto-scroll progress bar */}
+      {count > 1 && (
+        <div className="absolute inset-x-0 top-0 z-20 h-1 bg-white/20">
+          <div
+            key={active}
+            className="h-full bg-brand"
+            style={{
+              animation: `progress ${AUTOPLAY_MS}ms linear forwards`,
+              animationPlayState: paused ? 'paused' : 'running',
+            }}
+          />
+        </div>
+      )}
 
       {/* Controls */}
       {count > 1 && (

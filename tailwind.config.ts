@@ -61,6 +61,10 @@ const config: Config = {
           '0%': { opacity: '0', transform: 'translateX(40px)' },
           '100%': { opacity: '1', transform: 'translateX(0)' },
         },
+        progress: {
+          '0%': { width: '0%' },
+          '100%': { width: '100%' },
+        },
       },
       animation: {
         marquee: 'marquee 28s linear infinite',
@@ -72,6 +76,7 @@ const config: Config = {
         'fade-up': 'fade-up 0.6s cubic-bezier(0.16,1,0.3,1) forwards',
         'ken-burns': 'ken-burns 7s ease-out forwards',
         'slide-fade': 'slide-fade 0.6s cubic-bezier(0.16,1,0.3,1)',
+        'hero-progress': 'progress 5s linear forwards',
       },
     },
   },
