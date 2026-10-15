@@ -66,13 +66,23 @@ export function resetRateLimit(key: string): void {
 
 /** Best-effort client IP extraction from standard proxy headers. */
 export function clientIp(req: Request): string {
+  // Prefer headers set by the trusted reverse proxy (Hostinger/Cloudflare),
+  // which overwrite any client-supplied value. The leftmost X-Forwarded-For
+  // entry is client-controlled and spoofable, so use it only as a last resort,
+  // and take the LAST hop (added by the nearest trusted proxy) rather than the
+  // first, to make rate-limit evasion harder.
+  const realIp = req.headers.get('x-real-ip');
+  if (realIp) return realIp.trim();
+
+  const cf = req.headers.get('cf-connecting-ip');
+  if (cf) return cf.trim();
+
   const xff = req.headers.get('x-forwarded-for');
-  if (xff) return xff.split(',')[0].trim();
-  return (
-    req.headers.get('x-real-ip') ||
-    req.headers.get('cf-connecting-ip') ||
-    'unknown'
-  );
+  if (xff) {
+    const parts = xff.split(',').map((p) => p.trim()).filter(Boolean);
+    if (parts.length) return parts[parts.length - 1];
+  }
+  return 'unknown';
 }
 
 // Opportunistic cleanup so the map can't grow unbounded.
