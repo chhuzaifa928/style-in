@@ -535,6 +535,11 @@ export default function Storefront({ settings, categories, products }: Props) {
                 </li>
               )}
               <li>
+                <a href="/track" className="text-muted transition hover:text-brand">
+                  Track Order
+                </a>
+              </li>
+              <li>
                 <button onClick={() => setCartOpen(true)} className="text-muted transition hover:text-brand">
                   Your Bag
                 </button>
@@ -744,7 +749,17 @@ export default function Storefront({ settings, categories, products }: Props) {
             <p className="mt-2 text-sm text-muted">
               Thank you. Your order <span className="font-bold text-ink">{orderNumber}</span> has been placed and will be delivered with Cash on Delivery.
             </p>
-            <button onClick={() => setOrderNumber(null)} className="btn-dark mt-6 w-full">
+            <p className="mt-2 text-xs text-muted">
+              Save your order number — you can check its status anytime on the{' '}
+              <a href="/track" className="font-semibold text-brand underline">
+                order tracking page
+              </a>
+              .
+            </p>
+            <a href="/track" className="btn-outline mt-5 w-full">
+              Track My Order
+            </a>
+            <button onClick={() => setOrderNumber(null)} className="btn-dark mt-2 w-full">
               Continue Shopping
             </button>
           </div>
