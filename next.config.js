@@ -5,6 +5,11 @@ const nextConfig = {
   // platform required.
   output: 'standalone',
 
+  // Ensure these server-only packages are traced & copied into the standalone
+  // output (mysql2 has dynamic internal requires the bundler/tracer can miss,
+  // which would otherwise crash with "Cannot find module 'mysql2'" in prod).
+  serverExternalPackages: ['mysql2', 'bcryptjs'],
+
   // Hostinger Business hosting has no sharp/serverless image optimizer,
   // so serve images as-is.
   images: {
