@@ -583,7 +583,7 @@ export default function Storefront({ settings, categories, products }: Props) {
         {/* Copyright */}
         <div className="border-t border-hairline">
           <div className="container-page flex flex-col items-center justify-between gap-2 py-4 text-xs text-muted sm:flex-row">
-            <span>© {new Date().getFullYear()} StyleIn. All rights reserved.</span>
+            <span>© {new Date().getFullYear()} StyleIn by Chaudhary Huzaifa. All rights reserved.</span>
             <span>Designed in Pakistan · Cash on Delivery nationwide</span>
           </div>
         </div>
