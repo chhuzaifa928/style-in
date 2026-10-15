@@ -189,8 +189,8 @@ export default function CartDrawer({
               </span>
             </div>
             <div className="mt-2 flex items-center justify-between border-t border-hairline pt-2 text-base">
-              <span className="heading">Total</span>
-              <span className="heading text-brand">
+              <span className="text-base font-bold text-ink">Total</span>
+              <span className="price text-lg text-brand">
                 {formatPKR(subtotal + shippingFee)}
               </span>
             </div>

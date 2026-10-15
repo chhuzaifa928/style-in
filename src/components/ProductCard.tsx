@@ -193,14 +193,12 @@ export default function ProductCard({
         </button>
         <div className="flex items-baseline gap-2">
           <span
-            className={`text-sm font-bold ${
-              pct > 0 ? 'text-brand' : 'text-ink'
-            }`}
+            className={`price text-sm ${pct > 0 ? 'text-brand' : 'text-ink'}`}
           >
             {formatPKR(product.discounted_price)}
           </span>
           {pct > 0 && (
-            <span className="text-xs text-muted line-through">
+            <span className="text-xs text-muted line-through tabular-nums">
               {formatPKR(product.actual_price)}
             </span>
           )}

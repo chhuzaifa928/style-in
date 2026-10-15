@@ -201,8 +201,8 @@ export default function CheckoutModal({
               </span>
             </div>
             <div className="mt-2 flex items-center justify-between border-t border-hairline pt-2">
-              <span className="heading">Total to pay</span>
-              <span className="heading text-brand">{formatPKR(total)}</span>
+              <span className="text-base font-bold text-ink">Total to pay</span>
+              <span className="price text-lg text-brand">{formatPKR(total)}</span>
             </div>
           </div>
 

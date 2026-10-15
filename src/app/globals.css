@@ -61,6 +61,12 @@ body {
     @apply text-[11px] font-semibold uppercase tracking-[0.22em] text-muted;
   }
 
+  /* Prices & numeric figures: clean Inter with aligned tabular digits
+     (never the Syne display font). */
+  .price {
+    @apply font-sans font-bold tabular-nums tracking-tight;
+  }
+
   .heading {
     font-family: var(--font-syne);
     @apply font-extrabold tracking-tight text-ink;

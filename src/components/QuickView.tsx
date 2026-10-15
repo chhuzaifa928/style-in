@@ -124,12 +124,12 @@ export default function QuickView({ product, onClose, onAdd }: Props) {
 
           <div className="flex items-baseline gap-3">
             <span
-              className={`text-xl font-bold ${pct > 0 ? 'text-brand' : 'text-ink'}`}
+              className={`price text-xl ${pct > 0 ? 'text-brand' : 'text-ink'}`}
             >
               {formatPKR(product.discounted_price)}
             </span>
             {pct > 0 && (
-              <span className="text-sm text-muted line-through">
+              <span className="text-sm text-muted line-through tabular-nums">
                 {formatPKR(product.actual_price)}
               </span>
             )}
