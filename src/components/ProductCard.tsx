@@ -4,6 +4,7 @@ import { useState } from 'react';
 import type { Product } from '@/lib/types';
 import { formatPKR, discountPercent } from '@/lib/format';
 import { IconHeart, IconHeartFill, IconPlus } from './icons';
+import Tilt from './Tilt';
 
 interface Props {
   product: Product;
@@ -52,8 +53,8 @@ export default function ProductCard({
       onMouseEnter={() => setHover(true)}
       onMouseLeave={() => setHover(false)}
     >
-      {/* Image area */}
-      <div className="relative aspect-[4/5] w-full overflow-hidden bg-[#F1F0EC]">
+      {/* Image area (3D tilt + depth shadow on hover) */}
+      <Tilt className="relative aspect-[4/5] w-full overflow-hidden bg-[#F1F0EC] shadow-sm transition-shadow duration-300 group-hover:shadow-2xl">
         {/* Desktop crossfade between two angles */}
         <button
           type="button"
@@ -176,7 +177,7 @@ export default function ProductCard({
             )}
           </div>
         )}
-      </div>
+      </Tilt>
 
       {/* Meta */}
       <div className="mt-3 flex flex-col gap-1">

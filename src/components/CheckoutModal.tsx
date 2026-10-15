@@ -115,7 +115,7 @@ export default function CheckoutModal({
   return (
     <div className="fixed inset-0 z-[90] flex items-end justify-center sm:items-center">
       <button aria-label="Close" onClick={onClose} className="absolute inset-0 bg-ink/50 animate-fade-in" />
-      <div className="relative z-10 flex max-h-[94vh] w-full max-w-lg animate-slide-up flex-col overflow-hidden bg-surface shadow-2xl sm:animate-fade-in">
+      <div className="relative z-10 flex max-h-[94vh] w-full max-w-lg animate-slide-up flex-col overflow-hidden bg-surface shadow-2xl sm:animate-pop-in">
         <div className="flex items-center justify-between border-b border-hairline px-6 py-4">
           <div>
             <h2 className="heading text-lg">Cash on Delivery</h2>

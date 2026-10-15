@@ -69,7 +69,7 @@ export default function QuickView({ product, onClose, onAdd }: Props) {
         onClick={onClose}
         className="absolute inset-0 bg-ink/50 animate-fade-in"
       />
-      <div className="relative z-10 flex max-h-[92vh] w-full max-w-4xl animate-slide-up flex-col overflow-hidden bg-surface shadow-2xl sm:animate-fade-in sm:max-h-[88vh] sm:flex-row">
+      <div className="relative z-10 flex max-h-[92vh] w-full max-w-4xl animate-slide-up flex-col overflow-hidden bg-surface shadow-2xl sm:animate-pop-in sm:max-h-[88vh] sm:flex-row">
         <button
           onClick={onClose}
           aria-label="Close"

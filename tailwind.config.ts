@@ -65,6 +65,10 @@ const config: Config = {
           '0%': { width: '0%' },
           '100%': { width: '100%' },
         },
+        'pop-in': {
+          '0%': { opacity: '0', transform: 'scale(0.96) translateY(8px)' },
+          '100%': { opacity: '1', transform: 'scale(1) translateY(0)' },
+        },
       },
       animation: {
         marquee: 'marquee 28s linear infinite',
@@ -77,6 +81,7 @@ const config: Config = {
         'ken-burns': 'ken-burns 7s ease-out forwards',
         'slide-fade': 'slide-fade 0.6s cubic-bezier(0.16,1,0.3,1)',
         'hero-progress': 'progress 5s linear forwards',
+        'pop-in': 'pop-in 0.3s cubic-bezier(0.16,1,0.3,1)',
       },
     },
   },

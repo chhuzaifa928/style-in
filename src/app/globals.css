@@ -38,7 +38,7 @@ body {
   }
 
   .btn {
-    @apply inline-flex items-center justify-center gap-2 rounded-none px-5 py-3 text-sm font-semibold uppercase tracking-wide transition-colors duration-200 disabled:cursor-not-allowed disabled:opacity-40;
+    @apply inline-flex items-center justify-center gap-2 rounded-none px-5 py-3 text-sm font-semibold uppercase tracking-wide transition-[color,background-color,transform,box-shadow] duration-200 active:scale-[0.97] disabled:cursor-not-allowed disabled:opacity-40 disabled:active:scale-100;
   }
   .btn-dark {
     @apply btn bg-ink text-white hover:bg-brand;

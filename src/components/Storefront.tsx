@@ -8,6 +8,7 @@ import ProductCard from './ProductCard';
 import ProductRail from './ProductRail';
 import HeroSlider from './HeroSlider';
 import Reveal from './Reveal';
+import Tilt from './Tilt';
 import Newsletter from './Newsletter';
 import QuickView from './QuickView';
 import CartDrawer from './CartDrawer';
@@ -283,10 +284,10 @@ export default function Storefront({ settings, categories, products }: Props) {
               bg: 'linear-gradient(135deg,#C91A25,#7d0f16)',
             },
           ].map((h) => (
+            <Tilt key={h.title} max={5} scale={1} className="shadow-sm transition-shadow duration-300 hover:shadow-2xl">
             <button
-              key={h.title}
               onClick={() => goShop(h.cat)}
-              className="group relative flex aspect-[4/5] items-end overflow-hidden text-left sm:aspect-[16/10] md:aspect-[4/5]"
+              className="group relative flex aspect-[4/5] w-full items-end overflow-hidden text-left sm:aspect-[16/10] md:aspect-[4/5]"
               style={{ background: h.bg }}
             >
               {/* Background media (image or video) with gradient fallback */}
@@ -323,6 +324,7 @@ export default function Storefront({ settings, categories, products }: Props) {
                 </span>
               </div>
             </button>
+            </Tilt>
           ))}
         </Reveal>
 
