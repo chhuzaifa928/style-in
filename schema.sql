@@ -82,6 +82,9 @@ CREATE TABLE IF NOT EXISTS `products` (
   `stock`             INT           NOT NULL DEFAULT 0,
   `sort_order`        INT           NOT NULL DEFAULT 0,      -- lower shows first
   `is_featured`       TINYINT(1)    NOT NULL DEFAULT 0,
+  `show_in_new`       TINYINT(1)    NOT NULL DEFAULT 0,      -- New Arrivals rail
+  `show_in_best`      TINYINT(1)    NOT NULL DEFAULT 0,      -- Best Sellers rail
+  `show_in_sale`      TINYINT(1)    NOT NULL DEFAULT 0,      -- On Sale rail
   `is_active`         TINYINT(1)    NOT NULL DEFAULT 1,      -- 0 = archived
   `created_at`        TIMESTAMP     NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at`        TIMESTAMP     NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,

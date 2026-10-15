@@ -105,18 +105,24 @@ export default function Storefront({ settings, categories, products }: Props) {
     return list;
   }, [products, activeCat, search, sort]);
 
-  const newArrivals = useMemo(() => products.slice(0, 12), [products]);
+  // Admin-picked rail membership, with automatic fallback when none are picked.
+  const newArrivals = useMemo(() => {
+    const picked = products.filter((p) => p.show_in_new);
+    return (picked.length ? picked : products).slice(0, 12);
+  }, [products]);
   const bestSellers = useMemo(() => {
+    const picked = products.filter((p) => p.show_in_best);
+    if (picked.length) return picked.slice(0, 12);
     const feat = products.filter((p) => p.is_featured);
     return (feat.length ? feat : products).slice(0, 12);
   }, [products]);
-  const onSale = useMemo(
-    () =>
-      products
-        .filter((p) => discountPercent(p.actual_price, p.discounted_price) > 0)
-        .slice(0, 12),
-    [products],
-  );
+  const onSale = useMemo(() => {
+    const picked = products.filter((p) => p.show_in_sale);
+    if (picked.length) return picked.slice(0, 12);
+    return products
+      .filter((p) => discountPercent(p.actual_price, p.discounted_price) > 0)
+      .slice(0, 12);
+  }, [products]);
 
   const showToast = (msg: string) => {
     setToast(msg);

@@ -19,6 +19,9 @@ interface FormState {
   stock: string;
   sizes: string[];
   is_featured: boolean;
+  show_in_new: boolean;
+  show_in_best: boolean;
+  show_in_sale: boolean;
   is_active: boolean;
   images: DraftImage[];
 }
@@ -32,6 +35,9 @@ const EMPTY_FORM: FormState = {
   stock: '0',
   sizes: [],
   is_featured: false,
+  show_in_new: false,
+  show_in_best: false,
+  show_in_sale: false,
   is_active: true,
   images: [],
 };
@@ -79,6 +85,9 @@ export default function ProductsPanel({ categories, onToast }: Props) {
       stock: String(p.stock ?? 0),
       sizes: p.sizes_available ?? [],
       is_featured: Boolean(p.is_featured),
+      show_in_new: Boolean(p.show_in_new),
+      show_in_best: Boolean(p.show_in_best),
+      show_in_sale: Boolean(p.show_in_sale),
       is_active: Boolean(p.is_active),
       images: (p.images ?? []).map((i) => ({
         id: i.id,
@@ -135,6 +144,9 @@ export default function ProductsPanel({ categories, onToast }: Props) {
       stock: Number(form.stock) || 0,
       sizes_available: form.sizes,
       is_featured: form.is_featured,
+      show_in_new: form.show_in_new,
+      show_in_best: form.show_in_best,
+      show_in_sale: form.show_in_sale,
       is_active: form.is_active,
     };
 
@@ -438,11 +450,34 @@ export default function ProductsPanel({ categories, onToast }: Props) {
                   onSetPrimaryPersisted={editingId != null ? setPrimaryPersisted : undefined}
                 />
 
+                {/* Homepage rail placement */}
+                <div className="border-t border-hairline pt-4">
+                  <span className="label">Show on homepage rails</span>
+                  <div className="flex flex-wrap gap-4">
+                    <label className="flex items-center gap-2 text-sm">
+                      <input type="checkbox" checked={form.show_in_new} onChange={(e) => setForm({ ...form, show_in_new: e.target.checked })} />
+                      New Arrivals
+                    </label>
+                    <label className="flex items-center gap-2 text-sm">
+                      <input type="checkbox" checked={form.show_in_best} onChange={(e) => setForm({ ...form, show_in_best: e.target.checked })} />
+                      Best Sellers
+                    </label>
+                    <label className="flex items-center gap-2 text-sm">
+                      <input type="checkbox" checked={form.show_in_sale} onChange={(e) => setForm({ ...form, show_in_sale: e.target.checked })} />
+                      On Sale
+                    </label>
+                  </div>
+                  <p className="mt-1.5 text-[11px] text-muted">
+                    Tick the rails this product should appear in. If you leave a rail with no
+                    products ticked anywhere, it falls back to automatic (newest / featured / discounted).
+                  </p>
+                </div>
+
                 {/* Flags */}
                 <div className="flex flex-wrap gap-5 border-t border-hairline pt-4">
                   <label className="flex items-center gap-2 text-sm">
                     <input type="checkbox" checked={form.is_featured} onChange={(e) => setForm({ ...form, is_featured: e.target.checked })} />
-                    Featured (show in Featured Drops)
+                    Featured (shows the “New” badge)
                   </label>
                   <label className="flex items-center gap-2 text-sm">
                     <input type="checkbox" checked={form.is_active} onChange={(e) => setForm({ ...form, is_active: e.target.checked })} />

@@ -54,6 +54,9 @@ export async function POST(req: Request) {
     const sizes = cleanSizes(body.sizes_available);
     const stock = toInt(body.stock, 0);
     const isFeatured = body.is_featured ? 1 : 0;
+    const showInNew = body.show_in_new ? 1 : 0;
+    const showInBest = body.show_in_best ? 1 : 0;
+    const showInSale = body.show_in_sale ? 1 : 0;
     const isActive = body.is_active === false ? 0 : 1;
     const categoryId =
       body.category_id != null && body.category_id !== ''
@@ -87,8 +90,9 @@ export async function POST(req: Request) {
     const result = (await execute(
       `INSERT INTO products
          (category_id, name, slug, description, actual_price, discounted_price,
-          sizes_available, stock, is_featured, is_active)
-       VALUES (?,?,?,?,?,?,?,?,?,?)`,
+          sizes_available, stock, is_featured, show_in_new, show_in_best,
+          show_in_sale, is_active)
+       VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)`,
       [
         categoryId,
         name,
@@ -99,6 +103,9 @@ export async function POST(req: Request) {
         JSON.stringify(sizes),
         stock,
         isFeatured,
+        showInNew,
+        showInBest,
+        showInSale,
         isActive,
       ],
     )) as ResultSetHeader;

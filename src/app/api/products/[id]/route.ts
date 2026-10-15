@@ -55,6 +55,9 @@ export async function PUT(req: Request, ctx: Ctx) {
     const sizes = cleanSizes(body.sizes_available ?? existing.sizes_available);
     const stock = toInt(body.stock ?? existing.stock, 0);
     const isFeatured = body.is_featured ? 1 : 0;
+    const showInNew = body.show_in_new ? 1 : 0;
+    const showInBest = body.show_in_best ? 1 : 0;
+    const showInSale = body.show_in_sale ? 1 : 0;
     const isActive = body.is_active === false ? 0 : 1;
     const categoryId =
       body.category_id != null && body.category_id !== ''
@@ -70,7 +73,8 @@ export async function PUT(req: Request, ctx: Ctx) {
       `UPDATE products SET
          category_id = ?, name = ?, description = ?, actual_price = ?,
          discounted_price = ?, sizes_available = ?, stock = ?,
-         is_featured = ?, is_active = ?
+         is_featured = ?, show_in_new = ?, show_in_best = ?, show_in_sale = ?,
+         is_active = ?
        WHERE id = ?`,
       [
         categoryId,
@@ -81,6 +85,9 @@ export async function PUT(req: Request, ctx: Ctx) {
         JSON.stringify(sizes),
         stock,
         isFeatured,
+        showInNew,
+        showInBest,
+        showInSale,
         isActive,
         productId,
       ],

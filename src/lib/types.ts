@@ -68,6 +68,9 @@ export interface Product {
   sizes_available: string[] | null;
   stock: number;
   is_featured: number | boolean;
+  show_in_new: number | boolean;
+  show_in_best: number | boolean;
+  show_in_sale: number | boolean;
   is_active: number | boolean;
   created_at?: string;
   updated_at?: string;
