@@ -6,6 +6,7 @@ import { IconCheck } from './icons';
 /** Footer newsletter signup band. Posts to /api/newsletter. */
 export default function Newsletter() {
   const [email, setEmail] = useState('');
+  const [company, setCompany] = useState(''); // honeypot
   const [status, setStatus] = useState<'idle' | 'loading' | 'done' | 'error'>(
     'idle',
   );
@@ -19,7 +20,7 @@ export default function Newsletter() {
       const res = await fetch('/api/newsletter', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email }),
+        body: JSON.stringify({ email, company }),
       });
       const json = await res.json();
       if (!res.ok || !json.ok) {
@@ -55,6 +56,16 @@ export default function Newsletter() {
             onSubmit={submit}
             className="flex w-full max-w-md flex-col gap-2 sm:flex-row"
           >
+            <input
+              type="text"
+              name="company"
+              tabIndex={-1}
+              autoComplete="off"
+              aria-hidden="true"
+              value={company}
+              onChange={(e) => setCompany(e.target.value)}
+              className="absolute left-[-9999px] h-0 w-0 opacity-0"
+            />
             <input
               type="email"
               required

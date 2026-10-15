@@ -16,6 +16,9 @@ export async function POST(req: Request) {
     if (!rl.allowed) return fail('Too many requests, try again later.', 429);
 
     const body = await req.json().catch(() => null);
+    if (String(body?.company ?? '').trim() !== '') {
+      return fail('Could not subscribe.', 400); // honeypot tripped
+    }
     const email = String(body?.email ?? '').trim().toLowerCase().slice(0, 190);
     if (!EMAIL_RE.test(email)) return fail('Enter a valid email address', 400);
 

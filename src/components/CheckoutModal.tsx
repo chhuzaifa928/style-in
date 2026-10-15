@@ -20,6 +20,7 @@ interface FormState {
   customer_phone: string;
   shipping_address: string;
   city: string;
+  company: string; // honeypot — must stay empty
 }
 
 const EMPTY: FormState = {
@@ -27,6 +28,7 @@ const EMPTY: FormState = {
   customer_phone: '',
   shipping_address: '',
   city: '',
+  company: '',
 };
 
 export default function CheckoutModal({
@@ -128,6 +130,17 @@ export default function CheckoutModal({
 
         <div className="flex-1 overflow-y-auto px-6 py-5">
           <div className="grid grid-cols-1 gap-4">
+            {/* Honeypot — hidden from humans; bots that fill it are rejected */}
+            <input
+              type="text"
+              name="company"
+              tabIndex={-1}
+              autoComplete="off"
+              aria-hidden="true"
+              value={form.company}
+              onChange={(e) => update('company', e.target.value)}
+              className="absolute left-[-9999px] h-0 w-0 opacity-0"
+            />
             <div>
               <label className="label" htmlFor="co-name">Full Name</label>
               <input

@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { randomUUID } from 'node:crypto';
-import { writeFile, mkdir } from 'node:fs/promises';
+import { writeFile, mkdir, readdir, stat } from 'node:fs/promises';
 import path from 'node:path';
 import { requireAdmin } from '@/lib/auth';
 import { guarded, verifyOrigin, fail, ok } from '@/lib/api';
@@ -35,6 +35,28 @@ const ALLOWED_VIDEO: Record<string, string> = {
 };
 
 const UPLOAD_DIR = path.join(process.cwd(), 'public', 'uploads');
+// Hard cap on total bytes stored under public/uploads (default 1GB).
+const MAX_TOTAL_BYTES =
+  Number(process.env.UPLOAD_MAX_TOTAL_MB || 1024) * 1024 * 1024;
+
+/** Sum the byte size of all files currently in the uploads directory. */
+async function currentUploadsBytes(): Promise<number> {
+  let total = 0;
+  try {
+    const names = await readdir(UPLOAD_DIR);
+    for (const name of names) {
+      try {
+        const s = await stat(path.join(UPLOAD_DIR, name));
+        if (s.isFile()) total += s.size;
+      } catch {
+        /* skip */
+      }
+    }
+  } catch {
+    /* dir may not exist yet */
+  }
+  return total;
+}
 
 /** Inspect the leading bytes to confirm the real image type. */
 function sniffType(bytes: Uint8Array): string | null {
@@ -119,6 +141,16 @@ export async function POST(req: Request) {
     if (entries.length > 10) return fail('Too many files (max 10)', 400);
 
     await mkdir(UPLOAD_DIR, { recursive: true });
+
+    // Reject the batch if it would push the uploads folder over the disk cap.
+    const usedBytes = await currentUploadsBytes();
+    const incomingBytes = entries.reduce((sum, f) => sum + f.size, 0);
+    if (usedBytes + incomingBytes > MAX_TOTAL_BYTES) {
+      return fail(
+        'Storage limit reached. Delete some media before uploading more.',
+        507,
+      );
+    }
 
     const saved: { url: string; filename: string }[] = [];
 

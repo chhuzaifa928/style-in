@@ -44,6 +44,11 @@ export async function POST(req: Request) {
     const body = await req.json().catch(() => null);
     if (!body) return fail('Invalid body', 400);
 
+    // Honeypot: a hidden field real users never fill. Bots often do.
+    if (String(body.company ?? '').trim() !== '') {
+      return fail('Your order could not be placed.', 400);
+    }
+
     const customerName = cleanText(body.customer_name, 190);
     const customerPhone = cleanPhone(body.customer_phone);
     const shippingAddress = cleanMultiline(body.shipping_address, 600);
@@ -86,7 +91,7 @@ export async function POST(req: Request) {
       for (const line of lines) {
         // Lock the product row for the duration of the transaction.
         const [rows] = await conn.execute<RowDataPacket[]>(
-          'SELECT id, name, discounted_price, stock, is_active FROM products WHERE id = ? FOR UPDATE',
+          'SELECT id, name, discounted_price, stock, is_active, sizes_available FROM products WHERE id = ? FOR UPDATE',
           [line.product_id],
         );
         const product = rows[0];
@@ -95,6 +100,27 @@ export async function POST(req: Request) {
             new Error(`A product in your cart is no longer available.`),
             { status: 409 },
           );
+        }
+
+        // Validate the chosen size against the product's real size list.
+        let sizes: string[] = [];
+        try {
+          sizes =
+            typeof product.sizes_available === 'string'
+              ? JSON.parse(product.sizes_available)
+              : (product.sizes_available ?? []);
+        } catch {
+          sizes = [];
+        }
+        if (Array.isArray(sizes) && sizes.length > 0) {
+          if (!line.size || !sizes.includes(line.size)) {
+            throw Object.assign(
+              new Error(`Please select a valid size for "${product.name}".`),
+              { status: 400 },
+            );
+          }
+        } else {
+          line.size = null; // product has no sizes — ignore any sent value
         }
         if (product.stock < line.qty) {
           throw Object.assign(

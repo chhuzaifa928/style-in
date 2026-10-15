@@ -22,6 +22,7 @@ export default function AdminApp() {
   const [categories, setCategories] = useState<Category[]>([]);
   const [toast, setToast] = useState('');
   const [pendingOrders, setPendingOrders] = useState(0);
+  const [defaultPassword, setDefaultPassword] = useState(false);
   const prevPending = useRef<number | null>(null);
 
   const loadCategories = useCallback(async () => {
@@ -31,6 +32,12 @@ export default function AdminApp() {
 
   useEffect(() => {
     void loadCategories();
+    void (async () => {
+      const res = await apiGet<{ usingDefaultPassword?: boolean }>(
+        '/api/admin/me',
+      );
+      if (res.ok && res.data?.usingDefaultPassword) setDefaultPassword(true);
+    })();
   }, [loadCategories]);
 
   const showToast = useCallback((msg: string) => {
@@ -148,6 +155,22 @@ export default function AdminApp() {
           ))}
         </nav>
       </header>
+
+      {defaultPassword && (
+        <div className="border-b border-brand/30 bg-brand/10">
+          <div className="container-page flex flex-wrap items-center justify-between gap-2 py-2.5 text-sm">
+            <span className="font-semibold text-brand">
+              ⚠ You&apos;re still using the default admin password. Change it now to secure your store.
+            </span>
+            <button
+              onClick={() => setTab('settings')}
+              className="font-semibold text-brand underline"
+            >
+              Go to Settings → Security
+            </button>
+          </div>
+        </div>
+      )}
 
       <main className="container-page py-8">
         {tab === 'products' && (
