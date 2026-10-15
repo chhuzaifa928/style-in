@@ -27,6 +27,7 @@ import {
   IconFacebook,
   IconTiktok,
   IconWhatsApp,
+  IconTruck,
 } from './icons';
 
 interface Props {
@@ -219,6 +220,14 @@ export default function Storefront({ settings, categories, products }: Props) {
           </nav>
 
           <div className="flex items-center gap-3 sm:gap-4">
+            <a
+              href="/track"
+              aria-label="Track your order"
+              title="Track your order"
+              className="text-ink hover:text-brand"
+            >
+              <IconTruck />
+            </a>
             <button
               onClick={() => setSearchOpen(true)}
               aria-label="Search"
