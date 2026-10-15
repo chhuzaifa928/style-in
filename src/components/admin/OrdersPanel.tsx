@@ -5,10 +5,41 @@ import type { Order, OrderStatus } from '@/lib/types';
 import { ORDER_STATUSES } from '@/lib/types';
 import { formatPKR } from '@/lib/format';
 import { apiGet, apiSend } from './api';
-import { IconChevron } from '../icons';
+import { IconChevron, IconWhatsApp } from '../icons';
 
 interface Props {
   onToast: (msg: string) => void;
+}
+
+/** Normalize a (mostly Pakistani) phone number to wa.me international digits. */
+function toWaDigits(phone: string): string {
+  let d = (phone || '').replace(/\D/g, '');
+  if (d.startsWith('00')) d = d.slice(2);
+  if (d.startsWith('0')) d = '92' + d.slice(1); // local 03xx -> 9203xx
+  else if (d.length === 10 && d.startsWith('3')) d = '92' + d; // 3xx... -> 92...
+  return d;
+}
+
+/** Build a wa.me link with a prefilled confirmation message incl. tracking ID. */
+function buildWaLink(order: Order): string {
+  const digits = toWaDigits(order.customer_phone);
+  const firstName = (order.customer_name || '').split(/\s+/)[0] || '';
+  const origin =
+    typeof window !== 'undefined' ? window.location.origin : '';
+  const lines = [
+    `Assalam-o-Alaikum ${firstName}!`,
+    `Thank you for shopping at StyleIn.`,
+    ``,
+    `Your order is ${order.order_status}.`,
+    `Tracking ID: ${order.order_number}`,
+    `Total (Cash on Delivery): ${formatPKR(order.total_amount)}`,
+    ``,
+    `Track your order anytime here:`,
+    `${origin}/track`,
+    ``,
+    `— StyleIn`,
+  ];
+  return `https://wa.me/${digits}?text=${encodeURIComponent(lines.join('\n'))}`;
 }
 
 const STATUS_COLORS: Record<OrderStatus, string> = {
@@ -165,6 +196,22 @@ export default function OrdersPanel({ onToast }: Props) {
                         {s}
                       </button>
                     ))}
+                  </div>
+
+                  {/* Send WhatsApp confirmation to the customer (1-click) */}
+                  <div className="mt-4 flex flex-wrap items-center gap-3 border-t border-hairline pt-4">
+                    <a
+                      href={buildWaLink(o)}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="inline-flex items-center gap-2 bg-[#25D366] px-4 py-2 text-sm font-semibold text-white transition hover:brightness-95"
+                    >
+                      <IconWhatsApp className="h-4 w-4" />
+                      Send WhatsApp confirmation
+                    </a>
+                    <span className="text-[11px] text-muted">
+                      Opens WhatsApp with the order status + tracking ID pre-typed to {o.customer_phone}.
+                    </span>
                   </div>
                 </div>
               )}
