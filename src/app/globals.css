@@ -67,6 +67,11 @@ body {
     @apply font-sans font-bold tabular-nums tracking-tight;
   }
 
+  /* Order / tracking IDs: clean monospace so every character reads clearly. */
+  .code {
+    @apply font-mono font-semibold tracking-wide;
+  }
+
   .heading {
     font-family: var(--font-syne);
     @apply font-extrabold tracking-tight text-ink;

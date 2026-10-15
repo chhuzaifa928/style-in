@@ -756,7 +756,7 @@ export default function Storefront({ settings, categories, products }: Props) {
             </div>
             <h2 className="heading mt-4 text-2xl">Order Confirmed!</h2>
             <p className="mt-2 text-sm text-muted">
-              Thank you. Your order <span className="font-bold text-ink">{orderNumber}</span> has been placed and will be delivered with Cash on Delivery.
+              Thank you. Your order <span className="code text-ink">{orderNumber}</span> has been placed and will be delivered with Cash on Delivery.
             </p>
             <p className="mt-2 text-xs text-muted">
               Save your order number — you can check its status anytime on the{' '}

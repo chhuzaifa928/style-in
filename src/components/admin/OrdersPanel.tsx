@@ -121,7 +121,7 @@ export default function OrdersPanel({ onToast }: Props) {
                 className="flex w-full items-center justify-between gap-3 px-4 py-3 text-left"
               >
                 <div className="flex flex-1 flex-wrap items-center gap-x-4 gap-y-1">
-                  <span className="font-bold">{o.order_number}</span>
+                  <span className="code text-ink">{o.order_number}</span>
                   <span className="text-sm text-muted">{o.customer_name}</span>
                   <span className="text-sm text-muted">{o.city}</span>
                   <span

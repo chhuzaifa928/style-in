@@ -105,7 +105,7 @@ export default function TrackPage() {
             <div className="flex flex-wrap items-center justify-between gap-2 border-b border-hairline pb-4">
               <div>
                 <p className="eyebrow">Order</p>
-                <p className="heading text-lg">{result.order_number}</p>
+                <p className="code text-lg text-ink">{result.order_number}</p>
               </div>
               <div className="text-right">
                 <p className="eyebrow">Placed</p>
