@@ -1,190 +1,176 @@
-# StyleIn — Streetwear & Footwear Boutique + Master CMS
+<div align="center">
 
-A production-grade, high-fashion e-commerce platform and admin CMS built with
-**Next.js 15 (App Router) + TypeScript + Tailwind CSS**, backed by **MySQL**
-(`mysql2/promise`), designed to run on **Hostinger Business Web Hosting** in
-Node.js standalone mode with **zero recurring third-party costs** (images are
-stored on Hostinger's SSD under `public/uploads`).
+# 🛍️ StyleIn<span style="color:#C91A25">.</span>
+
+### High‑fashion streetwear & footwear e‑commerce — with a full Master CMS
+
+*Editorial lookbook storefront · Cash‑on‑Delivery checkout · zero recurring costs · built for Hostinger*
+
+<br/>
+
+![Next.js](https://img.shields.io/badge/Next.js-15-000000?style=for-the-badge&logo=next.js&logoColor=white)
+![TypeScript](https://img.shields.io/badge/TypeScript-5-3178C6?style=for-the-badge&logo=typescript&logoColor=white)
+![Tailwind CSS](https://img.shields.io/badge/Tailwind-3-06B6D4?style=for-the-badge&logo=tailwindcss&logoColor=white)
+![MySQL](https://img.shields.io/badge/MySQL-8-4479A1?style=for-the-badge&logo=mysql&logoColor=white)
+![Node](https://img.shields.io/badge/Node-20%2B-339933?style=for-the-badge&logo=node.js&logoColor=white)
+
+<br/>
+
+`Warm off‑white canvas` · `Cherry‑red accent` · `Syne + Inter type` · `3D tilt` · `fully responsive`
+
+</div>
 
 ---
 
-## ✨ What's inside
+## ✨ Overview
 
-| Layer | Highlights |
-|-------|-----------|
-| **Storefront** (`/`) | Sticky header + mega tabs, promo marquee (pause-on-hover), lookbook hero split, PLP with category filter & sort, product cards with dual pricing & auto `-X% OFF`, multi-angle hover crossfade + mobile swipe dots, low-stock sonar badge, out-of-stock disabling, quick-view modal, slide-over cart with free-shipping progress bar, COD 1-click checkout, mobile bottom nav & slide-over menu, live search. |
-| **Admin** (`/admin`) | bcrypt login, HTTP-only signed session cookie, products CRUD with live discount calc, apparel/shoe/custom sizes, stock tracker, multi-photo upload + external URL + primary cover + delete, category tree manager, site-wide CMS (marquee, contact, socials, fees), orders queue with status workflow. |
-| **Security** | Parameterized queries everywhere, MIME-whitelist + magic-byte + 5MB upload checks, UUID filenames (no path traversal), input sanitization, rate-limited login, SameSite + origin CSRF defense, middleware route protection. |
+**StyleIn** is a production‑grade online boutique and content‑management system for a modern streetwear & footwear brand. The storefront is an editorial, lookbook‑style shopping experience; the admin portal lets you run the entire store — catalog, pricing, inventory, media, content, and orders — without touching code or the database.
 
-Default admin credentials (seeded): **`admin` / `StyleIn@2026`** — change immediately after first login (Settings → Security).
+The whole stack is built to run on **Hostinger Business** Node.js hosting with **Hostinger MySQL**, storing images on local SSD — **no paid image buckets, no serverless vendor lock‑in, no monthly add‑ons.**
+
+> 🧩 **Scales without schema changes** — add Bags, Fragrances, Accessories or any new department from the admin. Products reference categories dynamically; the storefront picks them up automatically.
 
 ---
 
-## 🗂 Project structure
+## 🖥️ Storefront
+
+- 🎞️ **Full‑width hero slider** — auto‑scrolling campaign banners (image *or* video), admin‑managed, with a progress bar
+- 🪟 **Split lookbook panels** with interactive **3D hover tilt**
+- 📰 **Curated rails** — *New Arrivals*, *Best Sellers*, *On Sale* (hand‑pick products per rail from the admin)
+- 🏷️ **Smart product cards** — dual pricing (strikethrough vs. bold red), auto‑calculated `‑X% OFF`, multi‑angle hover crossfade, mobile swipe dots
+- 📡 **Live inventory cues** — pulsing *“Only X left”* sonar badge, instant *Sold Out* disabling
+- ⚡ **Quick‑View modal** with thumbnail gallery & size selector
+- 🛒 **Slide‑over cart** with a **free‑delivery progress bar**, and a validated **1‑click Cash‑on‑Delivery checkout**
+- 📦 **Order tracking page** — customers check status (Pending → Confirmed → Dispatched → Delivered) with order # + phone
+- 📣 Pause‑on‑hover promo marquee · 🔎 live search · ❤️ wishlist · 💬 floating WhatsApp button · 📱 mobile bottom nav & slide‑over menu
+
+## 🛠️ Master Admin Portal `/admin`
+
+- 🔐 **Secure gate** — bcrypt login, HTTP‑only signed session cookie, Edge‑middleware protection, brute‑force rate limiting
+- 👕 **Catalog & pricing** — add / edit / archive, compare‑at + selling price with **live discount calc**, apparel/shoe/custom sizes, real‑time **stock tracker** (auto‑decrements on COD orders)
+- 🖼️ **Universal media engine** — multi‑photo & video upload, external URL ingestion, set a primary cover, delete with disk + DB cleanup
+- 🗂️ **Category tree manager** — add departments on the fly
+- 🎛️ **Site‑wide CMS** — hero slider & panels, marquee, phone/WhatsApp/email/address/hours, social links, shipping fees & free‑delivery threshold
+- 📋 **Orders queue** — new‑order badge + sound alert, itemized breakdown, status workflow, **1‑click WhatsApp confirmation** with tracking ID
+- ↕️ **Merchandising control** — drag‑order products and choose which rails each one appears in
+
+---
+
+## 🔒 Security
+
+Enterprise‑grade controls across every layer — audited and verified:
+
+| Control | Implementation |
+|---|---|
+| **SQL injection** | 100% parameterized `mysql2` prepared statements · `multipleStatements` off |
+| **File uploads** | MIME whitelist **+ magic‑byte** check · 5 MB image / 50 MB video caps · crypto‑UUID filenames (no path traversal) · total‑size quota |
+| **XSS** | tag‑stripped inputs · React escaping · no `dangerouslySetInnerHTML` |
+| **Auth** | bcrypt · timing‑safe login · HMAC session · middleware on all `/admin` + `/api/admin/*` |
+| **CSRF** | SameSite cookie + strict Origin verification on every mutation |
+| **Abuse** | proxy‑aware rate limiting + hidden honeypots on checkout/newsletter |
+| **Order integrity** | prices re‑read server‑side · stock decremented in a `SELECT … FOR UPDATE` transaction |
+
+---
+
+## 🧰 Tech stack
+
+| Layer | Choice |
+|---|---|
+| Framework | **Next.js 15** (App Router) + **TypeScript** |
+| Styling | **Tailwind CSS** · Syne (display) + Inter (body) |
+| Database | **MySQL 8** via `mysql2/promise` (pooled singleton, max 10) |
+| Auth | `bcryptjs` + HMAC‑SHA256 signed cookies (Web Crypto) |
+| Hosting | Hostinger Business — Next.js `output: 'standalone'`, local SSD media |
+
+## 🎨 Design system
+
+| Token | Value | Use |
+|---|---|---|
+| Canvas | `#FBFBF9` | warm off‑white page background |
+| Surface | `#FFFFFF` | cards & modals |
+| Hairline | `#E8E7E3` | dividers & borders |
+| Brand | `#C91A25` | sale badges, accents, alerts |
+| Ink | `#121212` | primary headings |
+| Muted | `#6B6A68` | secondary copy |
+
+---
+
+## 🚀 Quick start (local)
+
+```bash
+# 1. Install
+npm install
+
+# 2. Configure env (copy and fill in DB_* + SESSION_SECRET)
+cp .env.example .env
+node -e "console.log(require('crypto').randomBytes(48).toString('hex'))"   # SESSION_SECRET
+
+# 3. Create the database, then import the schema in MySQL
+#    (phpMyAdmin / Workbench → run schema.sql against your database)
+
+# 4. Run
+npm run dev        # → http://localhost:3000
+```
+
+| URL | What |
+|---|---|
+| `/` | Storefront |
+| `/admin` | Admin portal — default login **`admin` / `StyleIn@2026`** ⚠️ *change immediately* |
+| `/track` | Customer order tracking |
+| `/api/health` | DB connectivity probe |
+
+---
+
+## ☁️ Deploy to Hostinger
+
+1. **Database** — create a MySQL DB in hPanel, import `schema.sql` in phpMyAdmin (one import, no migrations).
+2. **Build** — `npm run build`, then assemble `.next/standalone/` + `.next/static` + `public` into one folder and upload it.
+3. **Node.js app** — hPanel → Node.js: version 20+, startup file `server.js`, set env vars (`DB_*`, `SESSION_SECRET`, `COOKIE_SECURE=true`, `APP_ORIGIN`).
+4. **Persist uploads** — symlink `public/uploads` to a folder outside the build.
+5. **Verify** — `/api/health` → `{"ok":true,"db":"up"}`, then change the admin password.
+
+> 📖 Full click‑by‑click instructions live in **[`DEPLOY.md`](./DEPLOY.md)**.
+
+---
+
+## 📁 Project structure
 
 ```
-schema.sql                 ← paste into phpMyAdmin
-next.config.js             ← output: 'standalone', images.unoptimized
-tailwind.config.ts         ← editorial palette & motion
-scripts/hash-password.js   ← generate bcrypt hashes
+schema.sql                 # full DB — paste into phpMyAdmin
+migrations/                # incremental SQL for existing databases
+next.config.js             # standalone output, security headers, image config
+tailwind.config.ts         # editorial palette & motion
+scripts/hash-password.js   # generate bcrypt hashes
 src/
-  middleware.ts            ← protects /admin & /api/admin/*
-  lib/                     ← db pool, auth, session, sanitize, rate-limit, data
+  middleware.ts            # protects /admin & /api/admin/*
+  lib/                     # db pool, auth, session, sanitize, rate-limit, data
   app/
-    page.tsx               ← storefront (server component → <Storefront/>)
-    admin/                 ← login + dashboard
-    api/                   ← upload, products, categories, orders, settings, admin
-  components/              ← storefront + admin UI
-public/uploads/            ← user-uploaded product images (served statically)
+    page.tsx               # storefront
+    track/                 # order tracking
+    admin/                 # login + dashboard
+    api/                   # upload, products, categories, orders, settings, …
+  components/              # storefront + admin UI
+public/uploads/            # user media (served statically)
 ```
 
----
+## 🗄️ Database
 
-## 🧑‍💻 Local development
+`site_settings` · `categories` *(recursive tree)* · `products` · `product_images` *(cascade)* · `orders` · `admin_users` · `newsletter_subscribers`
 
-```bash
-cp .env.example .env         # fill in DB_* + SESSION_SECRET
-npm install
-npm run dev                  # http://localhost:3000
-```
-
-Generate a session secret:
+## 📜 Scripts
 
 ```bash
-node -e "console.log(require('crypto').randomBytes(48).toString('hex'))"
-```
-
----
-
-## 🚀 Deploy to Hostinger (hPanel) — step by step
-
-### 1. Create the MySQL database
-1. hPanel → **Databases → MySQL Databases**.
-2. Create a database (e.g. `uXXXX_stylein`), a DB user, and a strong password.
-   Grant the user **all privileges** on that database.
-3. Note the **host** (usually `localhost`), **DB name**, **user**, **password**.
-
-### 2. Import the schema
-1. hPanel → **Databases → phpMyAdmin** → open your database.
-2. Open the **SQL** tab, paste the entire contents of `schema.sql`, click **Go**.
-3. This creates all tables and seeds `site_settings`, the `Clothes`/`Shoes`
-   categories, and the default `admin` user.
-
-### 3. Build locally, then upload
-Hostinger runs the app in standalone mode. Build on your machine:
-
-```bash
-npm install
-npm run build
-```
-
-This produces `.next/standalone/` (containing `server.js`). Standalone does
-**not** bundle static assets automatically, so assemble a deploy folder:
-
-```bash
-# from the project root
-cp -r .next/standalone/.  deploy/
-cp -r .next/static        deploy/.next/static
-cp -r public              deploy/public
-```
-
-Now `deploy/` contains `server.js`, `.next/`, `node_modules`, `public/`.
-Zip the **contents** of `deploy/` and upload via hPanel **File Manager** (or
-SFTP/Git) into your app directory, e.g. `~/domains/your-domain.com/stylein`.
-
-> Prefer Git? Push this repo, then on the server run `npm ci && npm run build`
-> if your plan provides shell/Node — otherwise the upload method above is the
-> reliable path on shared Business hosting.
-
-### 4. Create the Node.js application
-1. hPanel → **Advanced → Node.js** (Setup Node.js App).
-2. **Node.js version:** select **20.x or newer** (the app requires Node ≥ 20).
-3. **Application root:** the folder you uploaded to (e.g. `stylein`).
-4. **Application startup file:** `server.js`.
-5. **Application URL:** your domain or subdomain.
-
-### 5. Environment variables
-In the Node.js app panel, add each variable from `.env.example`:
-
-| Key | Value |
-|-----|-------|
-| `DB_HOST` | `localhost` |
-| `DB_PORT` | `3306` |
-| `DB_USER` | your DB user |
-| `DB_PASSWORD` | your DB password |
-| `DB_NAME` | your DB name |
-| `SESSION_SECRET` | a 64+ char random hex string |
-| `COOKIE_SECURE` | `true` (HTTPS) |
-| `APP_ORIGIN` | `https://your-domain.com` |
-| `NODE_ENV` | `production` |
-| `PORT` | the port Hostinger assigns (often injected automatically) |
-
-### 6. Uploads folder & symlink
-Product images are written to `public/uploads` and served as static files.
-
-- Ensure `public/uploads` exists and is **writable** (chmod `755`).
-- Because the standalone server serves from its own `public/`, keep uploads
-  **inside the running app's `public/uploads`**. If you deploy new builds
-  frequently, make uploads survive redeploys by pointing the app's
-  `public/uploads` at a persistent folder with a symlink:
-
-```bash
-# one-time: create a persistent store outside the build
-mkdir -p ~/persistent/stylein-uploads
-
-# in the deployed app directory, replace public/uploads with a symlink
-rm -rf public/uploads
-ln -s ~/persistent/stylein-uploads public/uploads
-```
-
-Now every redeploy keeps previously uploaded images.
-
-### 7. Start & verify
-1. Click **Restart** (or Start) in the Node.js app panel.
-2. Visit `https://your-domain.com/api/health` → should return `{"ok":true,"db":"up"}`.
-3. Visit `https://your-domain.com` for the storefront.
-4. Visit `https://your-domain.com/admin` → log in with `admin` / `StyleIn@2026`.
-5. **Settings → Security → change the admin password immediately.**
-6. Add your categories, products, photos, and site content from the admin.
-
----
-
-## 🔐 Security checklist (all implemented)
-
-- **SQL injection:** every query uses `mysql2` prepared statements with `?`
-  placeholders; `multipleStatements` is disabled. No string concatenation.
-- **File uploads:** MIME whitelist (`jpeg`/`png`/`webp`) **and** magic-byte
-  signature check, 5MB cap, crypto-UUID filenames (client name discarded →
-  no path traversal), written `0644` under `public/uploads` and served as
-  static assets only.
-- **XSS:** all CMS text, phone numbers, and descriptions are sanitized (angle
-  brackets stripped, control chars removed, length-bounded) before insert;
-  React escapes on render; `dangerouslySetInnerHTML` is never used.
-- **Auth:** bcrypt hashing; login compares against a dummy hash for unknown
-  users to keep timing uniform; signed HMAC-SHA256 session in an HTTP-only,
-  `SameSite=Lax`, `Secure` cookie; Edge middleware guards `/admin` and
-  `/api/admin/*`; per-route `requireAdmin()` guards all mutations.
-- **Brute force:** login is rate-limited (8 attempts / 10 min per IP).
-- **CSRF:** `SameSite` cookie + strict Origin/Referer verification on every
-  mutating request.
-- **Order integrity:** checkout re-reads prices from the DB (ignores client
-  prices) and decrements stock inside a `SELECT … FOR UPDATE` transaction.
-
----
-
-## 🧩 Scaling to new departments
-
-No schema redesign needed. Add **Bags**, **Fragrances**, **Accessories**, etc.
-from **Admin → Categories**; products reference categories by id and the
-storefront tabs/filters pick them up automatically.
-
----
-
-## 🛠 Scripts
-
-```bash
-npm run dev     # local dev server
-npm run build   # production build (.next/standalone)
-npm run start   # run the standalone server.js
+npm run dev      # local dev server
+npm run build    # production build (.next/standalone)
+npm run start    # run the standalone server.js
 node scripts/hash-password.js "NewPassword"   # bcrypt hash for seeding
 ```
+
+---
+
+<div align="center">
+
+**StyleIn** — crafted by **Chaudhary Huzaifa** 🇵🇰
+*Editorial streetwear & kinetic footwear · Cash on Delivery nationwide*
+
+</div>
