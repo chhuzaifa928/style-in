@@ -121,36 +121,20 @@ export default function HeroSlider({ slides, onCta }: Props) {
         </div>
       )}
 
-      {/* Controls */}
+      {/* Dot indicators (arrows removed; slider auto-scrolls) */}
       {count > 1 && (
-        <>
-          <button
-            onClick={() => go(active - 1)}
-            aria-label="Previous slide"
-            className="absolute left-3 top-1/2 z-20 hidden -translate-y-1/2 grid h-11 w-11 place-items-center rounded-full bg-white/80 text-ink transition hover:bg-white sm:grid"
-          >
-            <IconChevron className="h-5 w-5 rotate-180" />
-          </button>
-          <button
-            onClick={() => go(active + 1)}
-            aria-label="Next slide"
-            className="absolute right-3 top-1/2 z-20 hidden -translate-y-1/2 grid h-11 w-11 place-items-center rounded-full bg-white/80 text-ink transition hover:bg-white sm:grid"
-          >
-            <IconChevron className="h-5 w-5" />
-          </button>
-          <div className="absolute bottom-5 left-1/2 z-20 flex -translate-x-1/2 gap-2">
-            {slides.map((_, i) => (
-              <button
-                key={i}
-                onClick={() => go(i)}
-                aria-label={`Go to slide ${i + 1}`}
-                className={`h-1.5 rounded-full transition-all ${
-                  i === active ? 'w-8 bg-white' : 'w-3 bg-white/50'
-                }`}
-              />
-            ))}
-          </div>
-        </>
+        <div className="absolute bottom-5 left-1/2 z-20 flex -translate-x-1/2 gap-2">
+          {slides.map((_, i) => (
+            <button
+              key={i}
+              onClick={() => go(i)}
+              aria-label={`Go to slide ${i + 1}`}
+              className={`h-1.5 rounded-full transition-all ${
+                i === active ? 'w-8 bg-white' : 'w-3 bg-white/50'
+              }`}
+            />
+          ))}
+        </div>
       )}
     </section>
   );
