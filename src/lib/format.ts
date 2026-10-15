@@ -18,10 +18,6 @@ export function discountPercent(
   return Math.round(((actual - discounted) / actual) * 100);
 }
 
-export function hasDiscount(actual: number, discounted: number): boolean {
-  return discountPercent(actual, discounted) > 0;
-}
-
 /** True when a media URL points at a video file we can play inline. */
 export function isVideoUrl(url: string | null | undefined): boolean {
   if (!url) return false;
